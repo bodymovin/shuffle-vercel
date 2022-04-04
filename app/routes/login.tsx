@@ -3,7 +3,7 @@ import {
   ActionFunction, json, LoaderFunction, redirect,
 } from '@remix-run/node';
 import {
-  Form, useLoaderData,
+  Form, Link, useLoaderData,
 } from '@remix-run/react';
 import { bodyParser } from 'remix-utils';
 import { commitSession, getSessionFromRequest } from '~/sessions';
@@ -61,30 +61,36 @@ function Login() {
 
   return (
     <div className="wrapper">
-      <Form
-        className="form"
-        method="post"
-      >
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          className="text-input"
-          autoComplete="email"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          className="text-input"
-          autoComplete="password"
-        />
-        <button type="submit" className="login">Submit</button>
-        { data.error
-          && (
-            <div>{data.error}</div>
-          )}
-      </Form>
+      <div className="content">
+        <Form
+          className="form"
+          method="post"
+        >
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            className="text-input"
+            autoComplete="email"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            className="text-input"
+            autoComplete="password"
+          />
+          <button type="submit" className="submit">Submit</button>
+          { data.error
+            && (
+              <div>{data.error}</div>
+            )}
+        </Form>
+        <span className="or">Or</span>
+        <Link to="/signup" className="link">Sign up</Link>
+        <span className="or">Or</span>
+        <Link to={`/selection/${ChapterType.character}`} className="link">Go to stories</Link>
+      </div>
     </div>
   );
 }
