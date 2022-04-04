@@ -15,7 +15,7 @@ import styles from '~/styles/global.css';
 import menuStyles from '~/styles/menu.css';
 import lottieStyles from '~/styles/lottie.css';
 import { MetaFunction } from '@remix-run/react/routeModules';
-import { getColorsFromCookie } from './helpers/colorParser';
+import { getColorsFromCookie } from './helpers/colorParser.server';
 import { ColorSet } from './interfaces/colors';
 import Menu from './components/menu/Menu';
 import { User } from '@prisma/client';

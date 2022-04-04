@@ -1,5 +1,5 @@
 import { ActionFunction } from '@remix-run/server-runtime';
-import { serializeCookieWithColors, extractColorsFromRequest } from '~/helpers/colorParser'
+import { serializeCookieWithColors, extractColorsFromRequest } from '~/helpers/colorParser.server'
 
 export const action: ActionFunction = async ({request}) => {
   const colors = await extractColorsFromRequest(request)
