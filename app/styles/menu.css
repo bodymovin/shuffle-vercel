@@ -1,0 +1,178 @@
+.menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  z-index: 10;
+}
+
+.menu__slider {
+  height: 100%;
+  width: calc(var(--grid-unit) * 24);
+  background-color: var(--color-1);
+  border-right: 1px solid var(--color-2);
+  transform: translateX(-100%);
+  transition: transform 0.33s ease-in-out;
+  padding: calc(var(--grid-unit) * 4) calc(var(--grid-unit) * 2) var(--grid-unit) calc(var(--grid-unit) * 2);
+}
+
+.menu__checkbox {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.menu__checkbox:checked ~ .menu__slider {
+  transform: translateX(0);
+}
+
+.menu-button {
+  position: absolute;
+  top: calc(var(--grid-unit) * 1);
+  left: calc(var(--grid-unit) * 1);
+  cursor: pointer;
+  width: calc(var(--grid-unit) * 3);
+  height: calc(var(--grid-unit) * 3);
+}
+
+.menu-open rect {
+  fill: var(--color-1);
+}
+
+.menu-open use {
+  fill: var(--color-2);
+}
+
+.menu-close rect {
+  fill: var(--color-2);
+}
+
+.menu-close use {
+  fill: var(--color-1);
+}
+
+.menu-button .clip-rect {
+  transition: transform 1s ease-in-out;
+}
+
+.menu-button .clip-rect-0 {
+  transform: translate(0, -70px);
+}
+
+.menu-button .clip-rect-1 {
+  transform: translate(0, -60px);
+}
+
+.menu-button .clip-rect-2 {
+  transform: translate(0, -52px);
+}
+
+.menu-button .clip-rect-3 {
+  transform: translate(0, -60px);
+}
+
+.menu-button .clip-rect-4 {
+  transform: translate(0, -70px);
+}
+
+.menu-button .clip-rect-5 {
+  transform: translate(0, -60px);
+}
+
+.menu-button .clip-rect-6 {
+  transform: translate(0, -52px);
+}
+
+.menu-button .clip-rect-7 {
+  transform: translate(0, -60px);
+}
+
+.menu-button .clip-rect-8 {
+  transform: translate(0, -70px);
+}
+
+.menu-button .clip-rect-9 {
+  transform: translate(0, -60px);
+}
+
+.menu-button .clip-rect-10 {
+  transform: translate(0, -70px);
+}
+
+.menu-button .clip-rect-11 {
+  transform: translate(0, -60px);
+}
+
+.menu-button .clip-rect-12 {
+  transform: translate(0, -52px);
+}
+
+.menu__checkbox:checked ~ .menu-button .clip-rect-0,
+.menu__checkbox:checked ~ .menu-button .clip-rect-1,
+.menu__checkbox:checked ~ .menu-button .clip-rect-2,
+.menu__checkbox:checked ~ .menu-button .clip-rect-3,
+.menu__checkbox:checked ~ .menu-button .clip-rect-4,
+.menu__checkbox:checked ~ .menu-button .clip-rect-5,
+.menu__checkbox:checked ~ .menu-button .clip-rect-6,
+.menu__checkbox:checked ~ .menu-button .clip-rect-7,
+.menu__checkbox:checked ~ .menu-button .clip-rect-8,
+.menu__checkbox:checked ~ .menu-button .clip-rect-9,
+.menu__checkbox:checked ~ .menu-button .clip-rect-10,
+.menu__checkbox:checked ~ .menu-button .clip-rect-11,
+.menu__checkbox:checked ~ .menu-button .clip-rect-12 {
+  transform: translate(0, 0);
+}
+
+.palette {
+  padding: 0;
+}
+
+.palette__title {
+  color: var(--color-2);
+  margin-top: calc(var(--grid-unit) * 2);
+  margin-bottom: calc(var(--grid-unit) * 1);
+}
+
+.palette__button {
+  width: 100%;
+  height: calc(var(--grid-unit) * 4);
+  display: flex;
+  align-items: stretch;
+  background: rgba(0,0,0,0.35);
+  margin: calc(var(--grid-unit) * 1) 0;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.75);
+}
+
+.palette__button__color {
+  display: inline-block;
+  margin: calc(var(--grid-unit)*0.5);
+  flex: 1 1 auto;
+}
+
+.login {
+  margin: calc(var(--grid-unit) * 4) 0;
+  padding: calc(var(--grid-unit) * 1) 0;
+  text-decoration: none;
+  display: inline-block;
+  background: var(--color-3);
+  width: 100%;
+  text-align: center;
+  color: var(--color-1);
+}
+
+.logout {
+  width: 100%;
+  margin: calc(var(--grid-unit) * 4) 0;
+  text-align: center;
+}
+
+.logout__button {
+  width: 100%;
+  color: var(--color-1);
+  cursor: pointer;
+  padding: calc(var(--grid-unit) * 1) 0;
+  background: var(--color-3);
+}

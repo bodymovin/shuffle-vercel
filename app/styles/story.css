@@ -1,0 +1,225 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-1);
+}
+
+.container {
+  max-height: 100%;
+  max-width: 100%;
+  aspect-ratio: 1009.95 / 815.25;
+  background-color: var(--color-2);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.story-chapter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: calc(var(--grid-unit) * 4);
+  background-color: var(--color-2);
+  border-top: 1px solid var(--color-1);
+  color: var(--color-1);
+  animation: text-anim 1000ms ease-in-out;
+  animation-delay: 1000ms;
+  animation-fill-mode: both;
+  z-index: 2;
+}
+
+.chapter {
+  position: absolute;
+  transition: top 1s ease-in-out, left 1s ease-in-out, width 1s ease-in-out, height 1s ease-in-out, opacity 1s ease-in-out;
+}
+
+.chapter--selected {
+  z-index: 1;
+}
+
+.chapter--unselected {
+  opacity: 0.15;
+}
+
+.chapter__background {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  animation: border-anim 3s ease-out;
+  background-color: var(--color-2);
+}
+
+.chapter__border {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  animation: border-anim 3s ease-out;
+  border: 1px solid var(--color-1);
+}
+
+.chapter__anim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  animation: inset-anim 3s ease-out;
+}
+
+.chapter__anim_wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes inset-anim {
+  0% {
+    clip-path: inset(50% 50% 50% 50%);
+    animation-timing-function: ease-in;
+  }
+  50% {
+    clip-path: inset(15% 35% 15% 35%);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes border-anim {
+  0% {
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    animation-timing-function: ease-in;
+  }
+  50% {
+    left: 35%;
+    top: 15%;
+    width: 30%;
+    height: 70%;
+    animation-timing-function: ease-out;
+  }
+  100% {
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@keyframes text-anim {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 25%, 0);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.chapter__1 {
+  top: 1.23%;
+  left: 34%;
+  width: 35%;
+  height: 63.7%;
+}
+
+.chapter__1--selected {
+  top: 7.1%;
+  left: 23.5%;
+  width: 53.1%;
+  height: 66.1%;
+}
+
+.chapter__2 {
+  top: 1.23%;
+  left: 1%;
+  width: 32%;
+  height: 54%;
+}
+
+.chapter__2--selected {
+  top: 9.6%;
+  left: 27.7%;
+  width: 44.6%;
+  height: 55%;
+}
+
+.chapter__3 {
+  top: 1.23%;
+  left: 70.3%;
+  width: 28.6%;
+  height: 37%;
+}
+
+.chapter__3--selected {
+  top: 9.8%;
+  left: 20.2%;
+  width: 59.7%;
+  height: 53.1%;
+}
+
+.chapter__4 {
+  top: 39.6%;
+  left: 70.3%;
+  width: 28.6%;
+  height: 25.4%;
+}
+
+.chapter__4--selected {
+  top: 9.8%;
+  left: 31.4%;
+  width: 37.2%;
+  height: 58.6%;
+}
+
+.chapter__5 {
+  top: 56.4%;
+  left: 1%;
+  width: 32%;
+  height: 42.3%;
+}
+
+.chapter__5--selected {
+  top: 16.3%;
+  left: 23.5%;
+  width: 53.1%;
+  height: 42.6%;
+}
+
+.chapter__6 {
+  top: 66.1%;
+  left: 34%;
+  width: 64.9%;
+  height: 32.6%;
+}
+
+.chapter__6--selected {
+  top: 19.5%;
+  left: 10.2%;
+  width: 79.6%;
+  height: 39.5%;
+}
+
+.chapter-modal {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: tomato;
+}

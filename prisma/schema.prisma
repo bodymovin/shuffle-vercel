@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Story {
+  id        String @id @default(uuid())
+  title     String @db.VarChar(255)
+  path      String @db.VarChar(255) @unique
+  order     Float @default(0)
+  free      Boolean
+  chapters   Chapter[]
+}
+
+model Chapter {
+  id      String         @id @default(uuid())
+  type    ChapterType
+  text    String @db.Text
+  story   Story       @relation(fields: [storyId], references: [id])
+  storyId String
+
+  @@unique([storyId, type], name: "storyChapterType")
+  @@index([storyId])
+}
+
+model User {
+  id       String         @id @default(uuid())
+  email    String @unique
+  name     String
+  password String
+  games   Int @default(0)
+}
+
+enum ChapterType {
+  character    @map("character")
+  partner      @map("partner")
+  object       @map("object")
+  vehicle      @map("vehicle")
+  path         @map("path")
+  destination  @map("destination")
+
+  @@map("_ChapterType")
+}
