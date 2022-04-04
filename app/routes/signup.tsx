@@ -8,21 +8,33 @@ import {
 import { bodyParser } from 'remix-utils';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
-import { findUserByEmailAndPassword } from '~/utils/user.server';
+import { createUser, findUserByEmail } from '~/utils/user.server';
 
 export const action: ActionFunction = async ({ request }) => {
   const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
-  const user = await findUserByEmailAndPassword(body.email, body.password);
+  const user = await findUserByEmail(body.email);
   if (user) {
-    session.set('userId', user.id);
-    return redirect(`/selection/${ChapterType.character}`, {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    });
+    session.flash('error', 'email already registered');
+  } else if (!body.email || !body.password || !body.passwordRepeat || !body.name) {
+    session.flash('error', 'please complete all fields');
+  } else if (body.password !== body.passwordRepeat) {
+    session.flash('error', 'passwords don\t match');
+  } else {
+    const newUser = await createUser(body.email, body.name, body.password);
+    if (newUser) {
+      session.set('userId', newUser.id);
+      if (session.get('userId')) {
+        return redirect(`/selection/${ChapterType.character}`, {
+          headers: {
+            'Set-Cookie': await commitSession(session),
+          },
+        });
+      }
+    } else {
+      session.flash('error', 'something went wrong');
+    }
   }
-  session.flash('error', 'wrong email or password');
   return json({}, {
     headers: {
       'Set-Cookie': await commitSession(session),
@@ -67,10 +79,18 @@ function Login() {
       >
         <input
           type="text"
+          name="name"
+          placeholder="name"
+          className="text-input"
+          autoComplete="name"
+        />
+        <input
+          type="email"
           name="email"
           placeholder="email"
           className="text-input"
           autoComplete="email"
+          required
         />
         <input
           type="password"
@@ -79,7 +99,14 @@ function Login() {
           className="text-input"
           autoComplete="password"
         />
-        <button type="submit" className="login">Submit</button>
+        <input
+          type="password"
+          name="passwordRepeat"
+          placeholder="repeat password"
+          className="text-input"
+          autoComplete="off"
+        />
+        <button type="submit">Submit</button>
         { data.error
           && (
             <div>{data.error}</div>

@@ -71,6 +71,17 @@ export const findUserByEmailAndPassword = async (
   return null;
 };
 
+export const findUserByEmail = async (
+  email: string,
+): Promise<User | null> => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  return user;
+};
+
 export async function logout(request: Request) {
   const session = await getSessionFromRequest(request);
   return redirect('/login', {
