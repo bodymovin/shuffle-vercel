@@ -6,7 +6,7 @@ const { getSession, commitSession, destroySession } = createCookieSessionStorage
     name: '__session',
 
     // all of these are optional
-    domain: '192.168.1.8',
+    domain: process.env.NODE_ENV === 'development' ? '192.168.1.8' : '',
     expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 4),
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 7 * 4,
