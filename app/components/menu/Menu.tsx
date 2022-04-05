@@ -34,6 +34,7 @@ function buildPaletteForm(colors:ColorSet, fetcher:any) {
           className="palette__button"
           name="palette"
           value="1"
+          aria-label={`Change palette to colors: ${colors.color1}, ${colors.color3}, ${colors.color3}`}
         >
           {buildPalette(colors)}
         </button>

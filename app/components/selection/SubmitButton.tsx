@@ -6,10 +6,11 @@ export interface ChapterButtonProps {
   id: string
   isSelected: boolean
   name?: string
+  ariaLabel: string
 }
 
 function SubmitButton({
-  value, path, isSelected, id, name = 'redirect',
+  value, path, isSelected, id, name = 'redirect', ariaLabel,
 }: ChapterButtonProps) {
   return (
     <button
@@ -18,6 +19,7 @@ function SubmitButton({
       name={name}
       className={`footer__chapter-button ${isSelected ? 'footer__chapter-button--selected' : '' }`}
       value={value}
+      aria-label={ariaLabel}
     >
       <LottieComponent
         loop={false}

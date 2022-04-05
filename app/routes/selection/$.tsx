@@ -211,6 +211,7 @@ function View() {
             onClick={(ev) => { ev.preventDefault(); navigateToNextStory(-1); }}
             className="story__navigation"
             disabled={currentStoryIndex <= 0}
+            aria-label="Previous story"
           >
             <svg
               viewBox="0 0 54.01 106.02"
@@ -244,6 +245,7 @@ function View() {
             onClick={(ev) => { ev.preventDefault(); navigateToNextStory(1); }}
             className="story__navigation"
             disabled={currentStoryIndex >= stories.length - 1}
+            aria-label="Next story"
           >
             <svg
               viewBox="0 0 54.01 106.02"
@@ -265,6 +267,7 @@ function View() {
             isSelected={false}
             name="toStory"
             path="/routed/assets/selection/read_button_3.json"
+            ariaLabel="Tell your story"
           />
         </footer>
       </article>
