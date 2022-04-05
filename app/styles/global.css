@@ -1,6 +1,7 @@
 @font-face {
   font-family: "Nunito";
   src: url("/fonts/Nunito/Nunito-VariableFont_wght.ttf") format("truetype-variations");
+  font-display: fallback;
 }
 
 :root {
