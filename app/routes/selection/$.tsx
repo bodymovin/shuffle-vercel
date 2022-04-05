@@ -10,16 +10,16 @@ import ChapterButton from '~/components/selection/ChapterButton';
 import SubmitButton from '~/components/selection/SubmitButton';
 import { ChapterToContent, ChapterStrings, ChapterNavigation } from '~/interfaces/chapters';
 import { User } from '@prisma/client';
-import { createAnonymousUserFromRequest, getUser, getUserById, updateUser } from '~/utils/user.server';
+import { getUser, getUserById, updateUser } from '~/utils/user.server';
 import { getSessionFromRequest, commitSession } from '~/sessions';
 import StoryChapter from '~/components/selection/StoryChapter';
+import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
 import {
-  getStories, getUserStoryForChapterFromRequest, SelectionStory, setUserStory,
+  getStories, getUserStoryForChapterFromRequest, SelectionStory,
 } from '../../helpers/story';
 import { getSelectionSubTitleByChapter, getSelectionTitleByChapter } from '../../helpers/textData';
-import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
 
 const getChapterFromRequest = (request: Request): ChapterStrings => {
   const urlData = new URL(request.url);

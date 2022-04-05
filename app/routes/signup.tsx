@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { bodyParser } from 'remix-utils';
 import LottieComponent from '~/components/Lottie';
 import TextLottie from '~/components/lottie/TextLottie';
+import { getUserPrefsFromRequest, UserPrefs } from '~/cookies';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
 import { createUser, findUserByEmail } from '~/utils/user.server';
@@ -24,7 +25,8 @@ export const action: ActionFunction = async ({ request }) => {
   } else if (body.password !== body.passwordRepeat) {
     session.flash('error', 'passwords don\'t match');
   } else {
-    const newUser = await createUser(body.email, body.name, body.password);
+    const userPrefs: UserPrefs = await getUserPrefsFromRequest(request);
+    const newUser = await createUser(body.email, body.name, body.password, userPrefs.games || 0);
     if (newUser) {
       session.set('userId', newUser.id);
       if (session.get('userId')) {

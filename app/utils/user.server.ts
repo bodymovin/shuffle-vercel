@@ -19,6 +19,7 @@ export const createUser = async (
   email: string,
   name: string,
   password: string,
+  games: number,
 ): Promise<User | null> => {
   try {
     const hashedPassword = await hash(password);
@@ -27,6 +28,7 @@ export const createUser = async (
         email,
         name,
         password: hashedPassword,
+        games,
       },
     });
     return user;
