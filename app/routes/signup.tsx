@@ -5,7 +5,10 @@ import {
 import {
   Form, Link, useLoaderData,
 } from '@remix-run/react';
+import React, { useState } from 'react';
 import { bodyParser } from 'remix-utils';
+import LottieComponent from '~/components/Lottie';
+import TextLottie from '~/components/lottie/TextLottie';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
 import { createUser, findUserByEmail } from '~/utils/user.server';
@@ -71,48 +74,81 @@ export function links() {
 function Login() {
   const data = useLoaderData();
 
+  const [nameText, setNameText] = useState('');
+  const [isFocused, setFocus] = useState(false);
+
+  const onFocus = () => {
+    setFocus(true);
+    setNameText('');
+  };
+
+  const onBlur = (ev: React.FocusEvent<HTMLInputElement>) => {
+    setFocus(false);
+    setNameText(ev.target.value);
+  };
+
+  // useEffect(() => {
+  // }, [counter]);
+
+  const formClassNames = [
+    'form-container',
+  ];
+
   return (
     <div className="wrapper">
       <div className="content">
-        <Form
-          className="form"
-          method="post"
-        >
-          <input
-            type="text"
-            name="name"
-            placeholder="name"
-            className="text-input"
-            autoComplete="name"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="email"
-            className="text-input"
-            autoComplete="email"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="password"
-            className="text-input"
-            autoComplete="password"
-          />
-          <input
-            type="password"
-            name="passwordRepeat"
-            placeholder="repeat password"
-            className="text-input"
-            autoComplete="off"
-          />
-          <button type="submit" className="submit">Submit</button>
+        <div className={formClassNames.join(' ')}>
+          <div className="form-anim">
+            {/* <TextLottie
+              path="/routed/assets/forms/signup2.json"
+              autoplay
+              loop
+              text={nameText}
+            /> */}
+          </div>
+          <Form
+            className="form"
+            method="post"
+          >
+            <input
+              type="text"
+              name="name"
+              placeholder="name"
+              className="text-input"
+              autoComplete="name"
+              onFocus={onFocus}
+              onBlur={onBlur}
+              style={{ color: isFocused ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,1)' }}
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="email"
+              className="text-input"
+              autoComplete="email"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="password"
+              className="text-input"
+              autoComplete="password"
+            />
+            <input
+              type="password"
+              name="passwordRepeat"
+              placeholder="repeat password"
+              className="text-input"
+              autoComplete="off"
+            />
+            <button type="submit" className="submit">Submit</button>
+          </Form>
           { data.error
-            && (
-              <div>{data.error}</div>
-            )}
-        </Form>
+          && (
+            <div>{data.error}</div>
+          )}
+        </div>
         <span className="or">Or</span>
         <Link to="/login" className="link">Sign in</Link>
         <span className="or">Or</span>

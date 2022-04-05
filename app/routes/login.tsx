@@ -62,30 +62,32 @@ function Login() {
   return (
     <div className="wrapper">
       <div className="content">
-        <Form
-          className="form"
-          method="post"
-        >
-          <input
-            type="text"
-            name="email"
-            placeholder="email"
-            className="text-input"
-            autoComplete="email"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="password"
-            className="text-input"
-            autoComplete="password"
-          />
-          <button type="submit" className="submit">Submit</button>
-          { data.error
-            && (
-              <div>{data.error}</div>
-            )}
-        </Form>
+        <div className="form-container">
+          <Form
+            className="form"
+            method="post"
+          >
+            <input
+              type="text"
+              name="email"
+              placeholder="email"
+              className="text-input"
+              autoComplete="email"
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="password"
+              className="text-input"
+              autoComplete="password"
+            />
+            <button type="submit" className="submit">Submit</button>
+            { data.error
+              && (
+                <div>{data.error}</div>
+              )}
+          </Form>
+        </div>
         <span className="or">Or</span>
         <Link to="/signup" className="link">Sign up</Link>
         <span className="or">Or</span>

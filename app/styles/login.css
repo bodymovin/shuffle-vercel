@@ -14,10 +14,23 @@
   padding: calc(var(--grid-unit) * 4) calc(var(--grid-unit) * 2);
 }
 
+.form-container {
+  width: 100%;
+  display: grid;
+  grid-template-areas: "all";
+}
+
 .form {
   width: 100%;
   display: flex;
   flex-direction: column;
+  grid-area: all;
+}
+
+.form-anim {
+  width: 100%;
+  grid-area: all;
+  pointer-events: none;
 }
 
 .or {
@@ -44,11 +57,15 @@
 
 .text-input {
   margin: calc(var(--grid-unit) * 1) 0;
+  height: calc(var(--grid-unit) * 3);
+  font-family: "Nunito";
+  font-size: 1rem;
 }
 
 .submit {
   margin: calc(var(--grid-unit) * 2) 0;
   padding: calc(var(--grid-unit) * 1) 0;
+  height: calc(var(--grid-unit) * 4);
   text-decoration: none;
   display: inline-block;
   width: 100%;

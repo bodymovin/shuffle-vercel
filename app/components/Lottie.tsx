@@ -1,4 +1,5 @@
-import Lottie from 'lottie-web/build/player/lottie_worker';
+// import Lottie from 'lottie-web/build/player/lottie_worker';
+import Lottie from 'lottie-web';
 import type {
   AnimationItem, AnimationConfigWithPath, AnimationConfigWithData,
 } from 'lottie-web/build/player/lottie';
@@ -7,13 +8,14 @@ import InlineSVG from './InlineSVG';
 
 type LottieRenderer = 'svg'
 
-interface LottieComponentProps {
+export interface LottieComponentProps {
   path?: string,
   animationString?: string,
   loop?: boolean,
   autoplay?: boolean,
-  renderer: LottieRenderer,
+  renderer?: LottieRenderer,
   onComplete?: () => void,
+  onLoad?: (anim: AnimationItem | null) => void,
   className?: string
   direction?: 1 | -1
   poster?: string | null,
@@ -47,6 +49,7 @@ function getConfig(
 function LottieComponent(props: LottieComponentProps) {
   const {
     onComplete,
+    onLoad,
     poster,
     direction,
     animationString,
@@ -63,6 +66,9 @@ function LottieComponent(props: LottieComponentProps) {
       containerAnimation.current.setDirection(direction);
     }
     setLoaded(true);
+    if (onLoad) {
+      onLoad(containerAnimation.current);
+    }
   };
 
   useEffect(() => {
@@ -73,7 +79,7 @@ function LottieComponent(props: LottieComponentProps) {
       setLoaded(false);
       const config = getConfig(props, containerElem.current);
       if (config) {
-        containerAnimation.current = Lottie.loadAnimation(config);
+        containerAnimation.current = Lottie.loadAnimation(config) as AnimationItem;
         if (onComplete) {
           containerAnimation.current.addEventListener('complete', onComplete);
         }
@@ -114,9 +120,11 @@ LottieComponent.defaultProps = {
   animationString: '',
   path: '',
   onComplete: () => {},
+  onLoad: (anim: AnimationItem | null) => {},
   className: '',
-  direction: 1,
+  direction: 0,
   poster: null,
+  renderer: 'svg',
 };
 
 export default LottieComponent;
