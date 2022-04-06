@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
 import { Link, useFetcher } from '@remix-run/react';
+import { useState } from 'react';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { ColorSet } from '~/interfaces/colors';
 
@@ -107,29 +108,40 @@ function buildLoginForm(user: User) {
   );
 }
 
+const buildMenuClass = (isMenuOpen: Boolean): string => {
+  const buttonClasses = [
+    'menu__checkbox',
+  ];
+
+  if (isMenuOpen) {
+    buttonClasses.push('menu__checkbox--open');
+  }
+
+  return buttonClasses.join(' ');
+};
+
 function Menu(props: MenuInterface) {
   const fetcher = useFetcher();
   const { user } = props;
+  const [isOpen, open] = useState(false);
+
+  const toggleOpen = () => open(!isOpen);
 
   return (
     <aside className="menu">
-      <input type="checkbox" id="menu-checkbox" className="menu__checkbox" />
-      <div className="menu__slider">
-        {/* {buildCustomPalette(colors, fetcher)} */}
-        <ul>
-          <li>
-            {buildPalettePicker(fetcher)}
-          </li>
-          <li>
-            {buildLoginForm(user)}
-          </li>
-        </ul>
-      </div>
-      <label
-        className="menu-button"
-        htmlFor="menu-checkbox"
+      <button
+        type="button"
+        id="menu-checkbox"
+        className={buildMenuClass(isOpen)}
+        onClick={toggleOpen}
+        aria-label="Main menu"
       >
-        <svg width="50" height="50" viewBox="0 0 50 50" style={{ width: '100%', height: '100%' }}>
+        <svg
+          width="50"
+          height="50"
+          viewBox="0 0 50 50"
+          style={{ width: '100%', height: '100%' }}
+        >
           <defs>
             <symbol id="rect-id">
               <rect
@@ -176,7 +188,18 @@ function Menu(props: MenuInterface) {
             />
           </g>
         </svg>
-      </label>
+      </button>
+      <div className="menu__slider">
+        {/* {buildCustomPalette(colors, fetcher)} */}
+        <ul>
+          <li>
+            {buildPalettePicker(fetcher)}
+          </li>
+          <li>
+            {buildLoginForm(user)}
+          </li>
+        </ul>
+      </div>
     </aside>
   );
 }

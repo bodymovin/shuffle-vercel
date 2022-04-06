@@ -18,23 +18,17 @@
 }
 
 .menu__checkbox {
-  visibility: hidden;
-  position: absolute;
-  left: 0;
-  right: 0;
-}
-
-.menu__checkbox:checked ~ .menu__slider {
-  transform: translateX(0);
-}
-
-.menu-button {
   position: absolute;
   top: calc(var(--grid-unit) * 1);
   left: calc(var(--grid-unit) * 1);
   cursor: pointer;
   width: calc(var(--grid-unit) * 3);
   height: calc(var(--grid-unit) * 3);
+  z-index: 1;
+}
+
+.menu__checkbox--open ~ .menu__slider {
+  transform: translateX(0);
 }
 
 .menu-open rect {
@@ -53,75 +47,75 @@
   fill: var(--color-1);
 }
 
-.menu-button .clip-rect {
+.menu__checkbox .clip-rect {
   transition: transform 1s ease-in-out;
 }
 
-.menu-button .clip-rect-0 {
+.menu__checkbox .clip-rect-0 {
   transform: translate(0, -70px);
 }
 
-.menu-button .clip-rect-1 {
+.menu__checkbox .clip-rect-1 {
   transform: translate(0, -60px);
 }
 
-.menu-button .clip-rect-2 {
+.menu__checkbox .clip-rect-2 {
   transform: translate(0, -52px);
 }
 
-.menu-button .clip-rect-3 {
+.menu__checkbox .clip-rect-3 {
   transform: translate(0, -60px);
 }
 
-.menu-button .clip-rect-4 {
+.menu__checkbox .clip-rect-4 {
   transform: translate(0, -70px);
 }
 
-.menu-button .clip-rect-5 {
+.menu__checkbox .clip-rect-5 {
   transform: translate(0, -60px);
 }
 
-.menu-button .clip-rect-6 {
+.menu__checkbox .clip-rect-6 {
   transform: translate(0, -52px);
 }
 
-.menu-button .clip-rect-7 {
+.menu__checkbox .clip-rect-7 {
   transform: translate(0, -60px);
 }
 
-.menu-button .clip-rect-8 {
+.menu__checkbox .clip-rect-8 {
   transform: translate(0, -70px);
 }
 
-.menu-button .clip-rect-9 {
+.menu__checkbox .clip-rect-9 {
   transform: translate(0, -60px);
 }
 
-.menu-button .clip-rect-10 {
+.menu__checkbox .clip-rect-10 {
   transform: translate(0, -70px);
 }
 
-.menu-button .clip-rect-11 {
+.menu__checkbox .clip-rect-11 {
   transform: translate(0, -60px);
 }
 
-.menu-button .clip-rect-12 {
+.menu__checkbox .clip-rect-12 {
   transform: translate(0, -52px);
 }
 
-.menu__checkbox:checked ~ .menu-button .clip-rect-0,
-.menu__checkbox:checked ~ .menu-button .clip-rect-1,
-.menu__checkbox:checked ~ .menu-button .clip-rect-2,
-.menu__checkbox:checked ~ .menu-button .clip-rect-3,
-.menu__checkbox:checked ~ .menu-button .clip-rect-4,
-.menu__checkbox:checked ~ .menu-button .clip-rect-5,
-.menu__checkbox:checked ~ .menu-button .clip-rect-6,
-.menu__checkbox:checked ~ .menu-button .clip-rect-7,
-.menu__checkbox:checked ~ .menu-button .clip-rect-8,
-.menu__checkbox:checked ~ .menu-button .clip-rect-9,
-.menu__checkbox:checked ~ .menu-button .clip-rect-10,
-.menu__checkbox:checked ~ .menu-button .clip-rect-11,
-.menu__checkbox:checked ~ .menu-button .clip-rect-12 {
+.menu__checkbox--open .clip-rect-0,
+.menu__checkbox--open .clip-rect-1,
+.menu__checkbox--open .clip-rect-2,
+.menu__checkbox--open .clip-rect-3,
+.menu__checkbox--open .clip-rect-4,
+.menu__checkbox--open .clip-rect-5,
+.menu__checkbox--open .clip-rect-6,
+.menu__checkbox--open .clip-rect-7,
+.menu__checkbox--open .clip-rect-8,
+.menu__checkbox--open .clip-rect-9,
+.menu__checkbox--open .clip-rect-10,
+.menu__checkbox--open .clip-rect-11,
+.menu__checkbox--open .clip-rect-12 {
   transform: translate(0, 0);
 }
 
