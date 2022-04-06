@@ -1,4 +1,5 @@
 import { createCookie } from '@remix-run/node';
+import { Speeds } from './interfaces/speeds';
 
 export interface UserPrefs {
   visitedSplash?: boolean,
@@ -12,6 +13,7 @@ export interface UserPrefs {
   path?: string
   destination?: string
   games?: number
+  speed?: Speeds
 }
 
 export const userPrefs = createCookie('user-prefs', {

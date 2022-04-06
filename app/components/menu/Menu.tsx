@@ -1,6 +1,5 @@
 import { User } from '@prisma/client';
 import { Link, useFetcher, useMatches } from '@remix-run/react';
-import { RouteMatch } from '@remix-run/react/routeMatching';
 import { useEffect, useState } from 'react';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { Chapters } from '~/helpers/enums/chapters';
@@ -41,6 +40,52 @@ function buildPaletteForm(colors:ColorSet, fetcher:any) {
           aria-label={`Change palette to colors: ${colors.color1}, ${colors.color3}, ${colors.color3}`}
         >
           {buildPalette(colors)}
+        </button>
+      </fetcher.Form>
+    </div>
+  );
+}
+
+function buildSpeedForm(fetcher: any) {
+  return (
+    <div className="speed">
+      <p className="speed__title">Choose site speed</p>
+      <fetcher.Form method="post" action="/speed" className="speed__form">
+        <button
+          type="submit"
+          className="speed__form__button"
+          name="speed"
+          value="static"
+          aria-label="Change site to slow speed"
+        >
+          No animation
+        </button>
+        <button
+          type="submit"
+          className="speed__form__button"
+          name="speed"
+          value="slow"
+          aria-label="Change site to slow speed"
+        >
+          Slow
+        </button>
+        <button
+          type="submit"
+          className="speed__form__button"
+          name="speed"
+          value="medium"
+          aria-label="Change site to medium speed"
+        >
+          Medium
+        </button>
+        <button
+          type="submit"
+          className="speed__form__button"
+          name="speed"
+          value="fast"
+          aria-label="Change site to fast speed"
+        >
+          Fast
         </button>
       </fetcher.Form>
     </div>
@@ -244,6 +289,9 @@ function Menu(props: MenuInterface) {
         <ul>
           <li>
             {buildPalettePicker(fetcher)}
+          </li>
+          <li>
+            {buildSpeedForm(fetcher)}
           </li>
           <li>
             {buildLoginForm(user)}

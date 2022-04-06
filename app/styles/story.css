@@ -58,7 +58,7 @@
   right: 0;
   width: 100%;
   height: 100%;
-  animation: border-anim 3s ease-out;
+  animation: border-anim calc(var(--animation-duration-unit) * 3) ease-out;
   background-color: var(--color-2);
 }
 
@@ -68,7 +68,7 @@
   right: 0;
   width: 100%;
   height: 100%;
-  animation: border-anim 3s ease-out;
+  animation: border-anim calc(var(--animation-duration-unit) * 3) ease-out;
   border: 1px solid var(--color-1);
 }
 
@@ -78,7 +78,7 @@
   right: 0;
   width: 100%;
   height: 100%;
-  animation: inset-anim 3s ease-out;
+  animation: inset-anim calc(var(--animation-duration-unit) * 3) ease-out;
 }
 
 .chapter__anim_wrapper {

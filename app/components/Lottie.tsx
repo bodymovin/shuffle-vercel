@@ -1,9 +1,12 @@
 // import Lottie from 'lottie-web/build/player/lottie_worker';
+import { useLoaderData } from '@remix-run/react';
 import Lottie from 'lottie-web';
 import type {
   AnimationItem, AnimationConfigWithPath, AnimationConfigWithData,
 } from 'lottie-web/build/player/lottie';
 import { useEffect, useRef, useState } from 'react';
+import { Speeds } from '~/interfaces/speeds';
+import { useSpeed } from '~/utils/providers/speed-provider';
 import InlineSVG from './InlineSVG';
 
 type LottieRenderer = 'svg'
@@ -46,7 +49,23 @@ function getConfig(
   return null;
 }
 
+type SpeedToData = {
+  // eslint-disable-next-line no-unused-vars
+  [key in Speeds]: number;
+};
+
+const calculateSpeed = (speed: Speeds) => {
+  const speeds:SpeedToData = {
+    slow: 0.33,
+    medium: 1,
+    fast: 3,
+    static: 999999999,
+  };
+  return speeds[speed] || speeds.medium;
+};
+
 function LottieComponent(props: LottieComponentProps) {
+  const speed = useSpeed();
   const {
     onComplete,
     onLoad,
@@ -62,8 +81,11 @@ function LottieComponent(props: LottieComponentProps) {
   const [isLoaded, setLoaded] = useState(false);
 
   const onDomLoaded = () => {
-    if (containerAnimation.current && direction) {
-      containerAnimation.current.setDirection(direction);
+    if (containerAnimation.current) {
+      containerAnimation.current.setSpeed(calculateSpeed(speed));
+      if (direction) {
+        containerAnimation.current.setDirection(direction);
+      }
     }
     setLoaded(true);
     if (onLoad) {
@@ -87,6 +109,12 @@ function LottieComponent(props: LottieComponentProps) {
       }
     }
   }, [animationString, path]);
+
+  useEffect(() => {
+    if (containerAnimation.current) {
+      containerAnimation.current.setSpeed(calculateSpeed(speed));
+    }
+  }, [speed]);
 
   useEffect(() => {
     if (containerAnimation.current && direction) {

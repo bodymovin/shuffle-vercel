@@ -10,7 +10,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  transition: opacity 1s ease-out;
+  transition: opacity var(--animation-duration-unit) ease-out;
 }
 
 .lottie-poster--hidden {
@@ -23,7 +23,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  transition: opacity 1s ease-out;
+  transition: opacity var(--animation-duration-unit) ease-out;
 }
 
 .lottie-animation--hidden {

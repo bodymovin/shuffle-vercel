@@ -144,7 +144,7 @@
   padding: 0;
 }
 
-.palette__title {
+.palette__title, .speed__title {
   color: var(--color-2);
   margin-top: calc(var(--grid-unit) * 2);
   margin-bottom: calc(var(--grid-unit) * 1);
@@ -196,4 +196,28 @@
   cursor: pointer;
   padding: calc(var(--grid-unit) * 1) 0;
   background: var(--color-3);
+}
+
+.speed {
+
+}
+
+.speed__form {
+}
+
+.speed__form__button {
+  display: block;
+  width: 100%;
+  background-color: var(--color-1);
+  color: var(--color-3);
+  padding: calc(var(--grid-unit) * 0.5);
+  margin: calc(var(--grid-unit) * 0.5);
+  cursor: pointer;
+}
+
+.speed__form__button:hover {
+  background-color: var(--color-3);
+  color: var(--color-1);
+  transition: background-color var(--animation-duration-unit) var(--animation-easing),
+    color var(--animation-duration-unit) var(--animation-easing);
 }
