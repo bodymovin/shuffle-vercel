@@ -9,6 +9,7 @@ import StoryVignette from '~/components/story/StoryVignette';
 import { getUserPrefsFromRequest } from '~/cookies';
 import { Chapters } from '~/helpers/enums/chapters';
 import { createSVG } from '~/helpers/svgToString';
+import { chaptersAriaLabels } from '~/helpers/texts/story';
 import { ChapterStrings, ChapterToContent } from '~/interfaces/chapters';
 import styles from '~/styles/story.css';
 import { findFirstFreeStory, findStories, StoryWithChapters } from '~/utils/stories.server';
@@ -125,21 +126,29 @@ export function links() {
 }
 
 function buildChapterButton(
-  chapterNumber: number,
-  animationPath: string,
-  link: string,
-  isSelected: boolean,
-  hasChapterSelected: boolean,
-  poster: string,
+  chapter: ChapterStrings,
+  animationPaths: ChapterToContent,
+  posters: ChapterToContent,
+  currentChapter: ChapterStrings | null,
 ) {
-  let className = `chapter chapter__${chapterNumber}`;
+  const animationPath = animationPaths[chapter];
+  const link = `/story/${chapter}`;
+  const isSelected = chapter === currentChapter;
+  const hasChapterSelected = !!currentChapter;
+  const poster = posters[chapter];
+  let className = `chapter chapter__${chapter}`;
   if (isSelected) {
-    className += ` chapter__${chapterNumber}--selected chapter--selected`;
+    className += ` chapter__${chapter}--selected chapter--selected`;
   } else if (hasChapterSelected) {
     className += ' chapter--unselected';
   }
   return (
-    <Link to={link} className={className}>
+    <Link
+      key={chapter}
+      to={link}
+      className={className}
+      aria-label={chaptersAriaLabels[chapter]}
+    >
       <div className="chapter__background" />
       <div className="chapter__anim">
         <StoryVignette
@@ -157,58 +166,23 @@ function StoryComponent() {
   const location = useLocation();
   const currentChapter = getChapterFromPath(location.pathname);
   const { posters, animationPaths, texts } = useLoaderData<UserStoryData>();
-
+  const buttons = [
+    Chapters.character,
+    Chapters.partner,
+    Chapters.object,
+    Chapters.vehicle,
+    Chapters.path,
+    Chapters.destination,
+  ];
   return (
     <div className="wrapper">
       <div className="container">
-        {buildChapterButton(
-          1,
-          animationPaths[Chapters.character],
-          `/story/${Chapters.character}`,
-          currentChapter === Chapters.character,
-          !!currentChapter,
-          posters[Chapters.character],
-        )}
-        {buildChapterButton(
-          2,
-          animationPaths[Chapters.partner],
-          `/story/${Chapters.partner}`,
-          currentChapter === Chapters.partner,
-          !!currentChapter,
-          posters[Chapters.partner],
-        )}
-        {buildChapterButton(
-          3,
-          animationPaths[Chapters.object],
-          `/story/${Chapters.object}`,
-          currentChapter === Chapters.object,
-          !!currentChapter,
-          posters[Chapters.object],
-        )}
-        {buildChapterButton(
-          4,
-          animationPaths[Chapters.vehicle],
-          `/story/${Chapters.vehicle}`,
-          currentChapter === Chapters.vehicle,
-          !!currentChapter,
-          posters[Chapters.vehicle],
-        )}
-        {buildChapterButton(
-          5,
-          animationPaths[Chapters.path],
-          `/story/${Chapters.path}`,
-          currentChapter === Chapters.path,
-          !!currentChapter,
-          posters[Chapters.path],
-        )}
-        {buildChapterButton(
-          6,
-          animationPaths[Chapters.destination],
-          `/story/${Chapters.destination}`,
-          currentChapter === Chapters.destination,
-          !!currentChapter,
-          posters[Chapters.destination],
-        )}
+        {buttons.map((chapter) => buildChapterButton(
+          chapter,
+          animationPaths,
+          posters,
+          currentChapter,
+        ))}
         { currentChapter
         && (
           <div

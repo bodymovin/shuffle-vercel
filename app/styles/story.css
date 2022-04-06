@@ -131,84 +131,84 @@
   }
 }
 
-.chapter__1 {
+.chapter__character {
   top: 1.23%;
   left: 34%;
   width: 35%;
   height: 63.7%;
 }
 
-.chapter__1--selected {
+.chapter__character--selected {
   top: 7.1%;
   left: 23.5%;
   width: 53.1%;
   height: 66.1%;
 }
 
-.chapter__2 {
+.chapter__partner {
   top: 1.23%;
   left: 1%;
   width: 32%;
   height: 54%;
 }
 
-.chapter__2--selected {
+.chapter__partner--selected {
   top: 9.6%;
   left: 27.7%;
   width: 44.6%;
   height: 55%;
 }
 
-.chapter__3 {
+.chapter__object {
   top: 1.23%;
   left: 70.3%;
   width: 28.6%;
   height: 37%;
 }
 
-.chapter__3--selected {
+.chapter__object--selected {
   top: 9.8%;
   left: 20.2%;
   width: 59.7%;
   height: 53.1%;
 }
 
-.chapter__4 {
+.chapter__vehicle {
   top: 39.6%;
   left: 70.3%;
   width: 28.6%;
   height: 25.4%;
 }
 
-.chapter__4--selected {
+.chapter__vehicle--selected {
   top: 9.8%;
   left: 31.4%;
   width: 37.2%;
   height: 58.6%;
 }
 
-.chapter__5 {
+.chapter__path {
   top: 56.4%;
   left: 1%;
   width: 32%;
   height: 42.3%;
 }
 
-.chapter__5--selected {
+.chapter__path--selected {
   top: 16.3%;
   left: 23.5%;
   width: 53.1%;
   height: 42.6%;
 }
 
-.chapter__6 {
+.chapter__destination {
   top: 66.1%;
   left: 34%;
   width: 64.9%;
   height: 32.6%;
 }
 
-.chapter__6--selected {
+.chapter__destination--selected {
   top: 19.5%;
   left: 10.2%;
   width: 79.6%;
