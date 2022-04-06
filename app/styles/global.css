@@ -9,6 +9,8 @@
   --color-2: #FFEBD5;
   --color-3: #F3E7D6;
   --grid-unit: 8px;
+  --animation-duration-unit: 1s;
+  --animation-easing: ease-in-out;
 }
 
 html, body {

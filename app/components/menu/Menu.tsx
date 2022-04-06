@@ -1,7 +1,9 @@
 import { User } from '@prisma/client';
 import { Link, useFetcher, useMatches } from '@remix-run/react';
+import { RouteMatch } from '@remix-run/react/routeMatching';
 import { useEffect, useState } from 'react';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
+import { Chapters } from '~/helpers/enums/chapters';
 import { ColorSet } from '~/interfaces/colors';
 
 interface MenuInterface {
@@ -110,14 +112,55 @@ function buildLoginForm(user: User) {
 
 const buildMenuClass = (isMenuOpen: Boolean): string => {
   const buttonClasses = [
-    'menu__checkbox',
+    'menu__toggle',
   ];
 
   if (isMenuOpen) {
-    buttonClasses.push('menu__checkbox--open');
+    buttonClasses.push('menu__toggle--open');
   }
 
   return buttonClasses.join(' ');
+};
+
+const buildNavLinkClass = (isMenuOpen: Boolean): string => {
+  const buttonClasses = [
+    'menu__navigation',
+  ];
+
+  if (isMenuOpen) {
+    buttonClasses.push('menu__navigation--open');
+  }
+
+  return buttonClasses.join(' ');
+};
+
+const buildSliderClass = (isMenuOpen: Boolean): string => {
+  const buttonClasses = [
+    'menu__slider',
+  ];
+
+  if (isMenuOpen) {
+    buttonClasses.push('menu__slider--open');
+  }
+
+  return buttonClasses.join(' ');
+};
+
+const buildNavButton = (matches: any[], isOpen: boolean) => {
+  const isStoryPath = !!matches.find((match) => match.pathname === '/story');
+
+  if (isStoryPath) {
+    return (
+      <Link
+        to={`/selection/${Chapters.character}`}
+        className={buildNavLinkClass(isOpen)}
+        aria-label="Go back to build your story"
+      >
+        {'<'}
+      </Link>
+    );
+  }
+  return null;
 };
 
 function Menu(props: MenuInterface) {
@@ -134,67 +177,69 @@ function Menu(props: MenuInterface) {
 
   return (
     <aside className="menu">
-      <button
-        type="button"
-        id="menu-checkbox"
-        className={buildMenuClass(isOpen)}
-        onClick={toggleOpen}
-        aria-label="Main menu"
-      >
-        <svg
-          width="50"
-          height="50"
-          viewBox="0 0 50 50"
-          style={{ width: '100%', height: '100%' }}
+      <div className="menu__floating-navigation">
+        <button
+          type="button"
+          className={buildMenuClass(isOpen)}
+          onClick={toggleOpen}
+          aria-label="Main menu"
         >
-          <defs>
-            <symbol id="rect-id">
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 50 50"
+            style={{ width: '100%', height: '100%' }}
+          >
+            <defs>
+              <symbol id="rect-id">
+                <rect
+                  x={13}
+                  y={24}
+                  width={24}
+                  height={2}
+                />
+              </symbol>
+              <clipPath id="menu-clip">
+                {buildClipPath()}
+              </clipPath>
+            </defs>
+            <g className="menu-open">
               <rect
-                x={13}
-                y={24}
-                width={24}
-                height={2}
+                width={50}
+                height={50}
               />
-            </symbol>
-            <clipPath id="menu-clip">
-              {buildClipPath()}
-            </clipPath>
-          </defs>
-          <g className="menu-open">
-            <rect
-              width={50}
-              height={50}
-            />
-            <use
-              xlinkHref="#rect-id"
-              transform="translate(0, -5)"
-            />
-            <use
-              xlinkHref="#rect-id"
-              transform="translate(0, 0)"
-            />
-            <use
-              xlinkHref="#rect-id"
-              transform="translate(0, 5)"
-            />
-          </g>
-          <g clipPath="url(#menu-clip)" className="menu-close">
-            <rect
-              width={50}
-              height={50}
-            />
-            <use
-              xlinkHref="#rect-id"
-              transform="translate(25, 25) rotate(45) translate(-25, -25)"
-            />
-            <use
-              xlinkHref="#rect-id"
-              transform="translate(25, 25) rotate(-45) translate(-25, -25)"
-            />
-          </g>
-        </svg>
-      </button>
-      <div className="menu__slider">
+              <use
+                xlinkHref="#rect-id"
+                transform="translate(0, -5)"
+              />
+              <use
+                xlinkHref="#rect-id"
+                transform="translate(0, 0)"
+              />
+              <use
+                xlinkHref="#rect-id"
+                transform="translate(0, 5)"
+              />
+            </g>
+            <g clipPath="url(#menu-clip)" className="menu-close">
+              <rect
+                width={50}
+                height={50}
+              />
+              <use
+                xlinkHref="#rect-id"
+                transform="translate(25, 25) rotate(45) translate(-25, -25)"
+              />
+              <use
+                xlinkHref="#rect-id"
+                transform="translate(25, 25) rotate(-45) translate(-25, -25)"
+              />
+            </g>
+          </svg>
+        </button>
+        {buildNavButton(matches, isOpen)}
+      </div>
+      <div className={buildSliderClass(isOpen)}>
         {/* {buildCustomPalette(colors, fetcher)} */}
         <ul>
           <li>

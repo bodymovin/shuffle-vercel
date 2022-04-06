@@ -84,7 +84,7 @@
   width: 30%;
   fill: none;
   stroke: var(--color-1);
-  transition: opacity 1s ease-in-out;
+  transition: opacity var(--animation-duration-unit) var(--animation-easing);
 }
 
 .story__navigation__icon--flipped {
@@ -101,7 +101,7 @@
   overflow: hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  animation: slide-up 1s ease-in-out;
+  animation: slide-up var(--animation-duration-unit) var(--animation-easing);
 }
 
 @keyframes slide-up {
@@ -122,7 +122,7 @@
 }
 
 .story-container__scroller--animated {
-  transition: transform 1s ease-in-out;
+  transition: transform var(--animation-duration-unit) var(--animation-easing);
 }
 
 .story-container__scroller__element {
@@ -144,7 +144,7 @@
   scroll-snap-align: start;
   flex-shrink: 0;
   padding: calc(var(--grid-unit) * 1);
-  transition: padding 1s ease-in-out;
+  transition: padding var(--animation-duration-unit) var(--animation-easing);
 }
 
 .story-radio-input:checked + label {
@@ -169,7 +169,7 @@
   top: 0;
   left: 0;
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  transition: opacity var(--animation-duration-unit) var(--animation-easing);
 }
 
 .story__container__lock {
