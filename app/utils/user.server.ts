@@ -2,6 +2,8 @@ import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { redirect } from '@remix-run/node';
 import { getUserPrefsFromRequest } from '~/cookies';
+import { errorCodes } from '~/helpers/constants/prisma';
+import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { destroySession, getSessionFromRequest } from '~/sessions';
 import { db } from './db.server';
 import { hash, validate } from './password.server';
@@ -35,7 +37,7 @@ export const createUser = async (
   } catch (error) {
     // TODO handle error types
     if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === 'P2002') {
+      if (error.code === errorCodes.UNIQUE_CONSTRAINT_FAILED) {
         // User already exists
         console.log('USER ALREADY EXISTS');
       }
@@ -96,7 +98,7 @@ export async function logout(request: Request) {
 export const createAnonymousUserFromRequest = async (request: Request): Promise<User> => {
   const userPrefs = await getUserPrefsFromRequest(request);
   const user: User = {
-    id: 'Anonymous',
+    id: ANONYMOUS_ID,
     email: '',
     name: '',
     password: '',

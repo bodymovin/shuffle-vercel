@@ -10,7 +10,7 @@ import {
 import {
   LinksFunction,
   LoaderFunction,
-} from '@remix-run/server-runtime';
+} from '@remix-run/node';
 import styles from '~/styles/global.css';
 import menuStyles from '~/styles/menu.css';
 import lottieStyles from '~/styles/lottie.css';

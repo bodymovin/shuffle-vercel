@@ -6,9 +6,10 @@ import {
   Form, Link, useLoaderData,
 } from '@remix-run/react';
 import { bodyParser } from 'remix-utils';
+import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
-import { findUserByEmailAndPassword } from '~/utils/user.server';
+import { findUserByEmailAndPassword, getUser } from '~/utils/user.server';
 
 export const action: ActionFunction = async ({ request }) => {
   const body: any = await bodyParser.toJSON(request);
@@ -32,7 +33,8 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSessionFromRequest(request);
-  if (session.get('userId')) {
+  const user = await getUser(request);
+  if (user.id !== ANONYMOUS_ID) {
     return redirect(`/selection/${ChapterType.character}`);
   }
   return json(

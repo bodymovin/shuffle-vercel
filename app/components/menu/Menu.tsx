@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
 import { Link, useFetcher } from '@remix-run/react';
+import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { ColorSet } from '~/interfaces/colors';
 
 interface MenuInterface {
@@ -92,7 +93,7 @@ function buildClipPath() {
 }
 
 function buildLoginForm(user: User) {
-  if (user.id === 'Anonymous') {
+  if (user.id === ANONYMOUS_ID) {
     return (
       <Link to="/login" className="login">Login</Link>
     );
