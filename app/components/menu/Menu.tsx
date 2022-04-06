@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
-import { Link, useFetcher } from '@remix-run/react';
-import { useState } from 'react';
+import { Link, useFetcher, useMatches } from '@remix-run/react';
+import { useEffect, useState } from 'react';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { ColorSet } from '~/interfaces/colors';
 
@@ -124,6 +124,11 @@ function Menu(props: MenuInterface) {
   const fetcher = useFetcher();
   const { user } = props;
   const [isOpen, open] = useState(false);
+  const matches = useMatches();
+
+  useEffect(() => {
+    open(false);
+  }, [matches]);
 
   const toggleOpen = () => open(!isOpen);
 
