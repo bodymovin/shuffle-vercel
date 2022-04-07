@@ -1,6 +1,8 @@
 import { User } from '@prisma/client';
 import { SelectionStory } from '~/helpers/story';
 import { withTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+import { LottieStates, useLottieAnim } from '~/utils/hooks/useLottieAnim';
 import InlineSVG from '../InlineSVG';
 import LottieComponent from '../Lottie';
 
@@ -23,6 +25,7 @@ const lockIconContent = `
 interface StoryChapterProps {
   story: SelectionStory
   selectedStoryId: string
+  isFocused: boolean
   user: User
   t: any
 }
@@ -33,12 +36,24 @@ function StoryChapter(props: StoryChapterProps) {
     selectedStoryId,
     user,
     t,
+    isFocused,
   } = props;
   const isLocked = !story.enabled;
   const classNames = ['story-container__scroller__element'];
   if (isLocked) {
     classNames.push('story-container__scroller__element--disabled');
   }
+
+  const [lottieRef, setLottieState] = useLottieAnim();
+
+  useEffect(() => {
+    if (isFocused) {
+      setLottieState(LottieStates.REPLAY);
+    } else {
+      setLottieState(LottieStates.STOP);
+    }
+  }, [isFocused, setLottieState]);
+
   return (
     <div key={story.id} className={classNames.join(' ')}>
       <input
@@ -63,10 +78,11 @@ function StoryChapter(props: StoryChapterProps) {
           />
           <LottieComponent
             loop={false}
-            autoplay
+            autoplay={isFocused}
             path={story.path}
             animationString={story.animation}
             renderer="svg"
+            ref={lottieRef}
             className="story__container__animation"
           />
           {isLocked

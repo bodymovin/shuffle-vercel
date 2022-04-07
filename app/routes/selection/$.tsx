@@ -237,11 +237,12 @@ function View() {
               className={`story-container__scroller ${isFirst ? '' : 'story-container__scroller--animated'}`}
               style={{ transform: `translate(${-100 * currentStoryIndex}%, 0)` }}
             >
-              {stories.map((story) => (
+              {stories.map((story, index) => (
                 <StoryChapter
                   key={story.id}
                   story={story}
                   selectedStoryId={selectedStoryId}
+                  isFocused={currentStoryIndex === index}
                   user={user}
                 />
               ))}

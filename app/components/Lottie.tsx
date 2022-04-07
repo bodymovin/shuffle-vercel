@@ -4,7 +4,9 @@ import Lottie from 'lottie-web';
 import type {
   AnimationItem, AnimationConfigWithPath, AnimationConfigWithData,
 } from 'lottie-web/build/player/lottie';
-import { useEffect, useRef, useState } from 'react';
+import React, {
+  forwardRef, useEffect, useImperativeHandle, useRef, useState,
+} from 'react';
 import { Speeds } from '~/interfaces/speeds';
 import { useSpeed } from '~/utils/providers/speed-provider';
 import InlineSVG from './InlineSVG';
@@ -69,7 +71,17 @@ const calculateSpeed = (speed: Speeds) => {
   return speeds[speed] || speeds.medium;
 };
 
-function LottieComponent(props: LottieComponentProps) {
+export type LottieComponentHandle = {
+  replay: () => void
+  stop: () => void
+}
+
+// eslint-disable-next-line react/function-component-definition
+const LottieComponent:
+  React.ForwardRefRenderFunction<
+  LottieComponentHandle,
+    // eslint-disable-next-line react/function-component-definition
+LottieComponentProps> = (props: LottieComponentProps, ref) => {
   const speed = useSpeed();
   const {
     onComplete,
@@ -135,6 +147,19 @@ function LottieComponent(props: LottieComponentProps) {
     }
   }, [segment]);
 
+  useImperativeHandle(ref, () => ({
+    replay: () => {
+      if (containerAnimation.current) {
+        containerAnimation.current.goToAndPlay(0);
+      }
+    },
+    stop: () => {
+      if (containerAnimation.current) {
+        containerAnimation.current.stop();
+      }
+    },
+  }));
+
   return (
     <div
       className={`lottie-wrapper ${className}`}
@@ -152,19 +177,19 @@ function LottieComponent(props: LottieComponentProps) {
       />
     </div>
   );
-}
-
-LottieComponent.defaultProps = {
-  autoplay: false,
-  loop: false,
-  animationString: '',
-  path: '',
-  onComplete: () => {},
-  onLoad: (anim: AnimationItem | null) => {},
-  className: '',
-  direction: 0,
-  poster: null,
-  renderer: 'svg',
 };
 
-export default LottieComponent;
+// LottieComponent.defaultProps = {
+//   autoplay: false,
+//   loop: false,
+//   animationString: '',
+//   path: '',
+//   onComplete: () => {},
+//   onLoad: (anim: AnimationItem | null) => {},
+//   className: '',
+//   direction: 0,
+//   poster: null,
+//   renderer: 'svg',
+// };
+
+export default forwardRef(LottieComponent);
