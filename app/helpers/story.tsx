@@ -28,9 +28,6 @@ export interface SelectionStory {
 
 export const getStories = async () => {
   const stories = await db.story.findMany({
-    include: {
-      chapters: true,
-    },
     orderBy: {
       order: 'asc',
     },

@@ -20,10 +20,12 @@ model Story {
   chapters   Chapter[]
 }
 
+// For now there is no use for chapters.
+// Keeping it in case it makes sense to store the width and height of highlight in the future
+
 model Chapter {
   id      String         @id @default(uuid())
   type    ChapterType
-  text    String @db.Text
   story   Story       @relation(fields: [storyId], references: [id])
   storyId String
 

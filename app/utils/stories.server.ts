@@ -9,13 +9,10 @@ const storyWithChapters = Prisma.validator<Prisma.StoryArgs>()({
 // 3: This type will include a user and all their chapters
 export type StoryWithChapters = Prisma.StoryGetPayload<typeof storyWithChapters>
 
-export const findStories = async (storyIds: string[]): Promise<StoryWithChapters[]> => {
+export const findStories = async (storyIds: string[]): Promise<Story[]> => {
   const stories = await db.story.findMany({
     where: {
       id: { in: storyIds },
-    },
-    include: {
-      chapters: true,
     },
   });
   return stories;

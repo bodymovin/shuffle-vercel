@@ -67,7 +67,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<UserStoryData>
     return dict;
   }, {});
 
-  // TODO: decide what to do if there is no stories still attached to the user
+  // TODO: decide what to do if there are no stories still attached to the user
   const defaultStoryId = stories[0].id;
 
   const posters: ChapterToContent = {
@@ -86,31 +86,28 @@ export const loader: LoaderFunction = async ({ request }):Promise<UserStoryData>
     [Chapters.path]: `/routed${storiesDict[userPrefs.path || defaultStoryId].path}path_highlight.json`,
     [Chapters.destination]: `/routed${storiesDict[userPrefs.destination || defaultStoryId].path}destination_highlight.json`,
   };
+  const translators = (await Promise.all(stories.map(async (story) => {
+    // TODO: build locale path in a better way. Probably add it to the db
+    const langPath = story.path.substring(story.path.lastIndexOf('/', story.path.lastIndexOf('/') - 1));
+    return {
+      storyId: story.id,
+      translator: await i18n.getFixedT(request, `stories${langPath}story`),
+    };
+  }))).reduce((translatorsDict: any, translatorData) => (
+    {
+      ...translatorsDict,
+      [translatorData.storyId]: translatorData.translator,
+    }
+  ), {});
   const texts: ChapterToContent = {
-    [Chapters.character]: findStoryChapter(
-      storiesDict[userPrefs.character || defaultStoryId],
-      Chapters.character,
-    ).text,
-    [Chapters.partner]: findStoryChapter(
-      storiesDict[userPrefs.partner || defaultStoryId],
-      Chapters.partner,
-    ).text,
-    [Chapters.object]: findStoryChapter(
-      storiesDict[userPrefs.object || defaultStoryId],
-      Chapters.object,
-    ).text,
-    [Chapters.vehicle]: findStoryChapter(
-      storiesDict[userPrefs.vehicle || defaultStoryId],
-      Chapters.vehicle,
-    ).text,
-    [Chapters.path]: findStoryChapter(
-      storiesDict[userPrefs.path || defaultStoryId],
-      Chapters.path,
-    ).text,
-    [Chapters.destination]: findStoryChapter(
-      storiesDict[userPrefs.destination || defaultStoryId],
+    [Chapters.character]: translators[userPrefs.character || defaultStoryId](Chapters.character),
+    [Chapters.partner]: translators[userPrefs.partner || defaultStoryId](Chapters.partner),
+    [Chapters.object]: translators[userPrefs.object || defaultStoryId](Chapters.object),
+    [Chapters.vehicle]: translators[userPrefs.vehicle || defaultStoryId](Chapters.vehicle),
+    [Chapters.path]: translators[userPrefs.path || defaultStoryId](Chapters.path),
+    [Chapters.destination]: translators[userPrefs.destination || defaultStoryId](
       Chapters.destination,
-    ).text,
+    ),
   };
   return {
     posters,
