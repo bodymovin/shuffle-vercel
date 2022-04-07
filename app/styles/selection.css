@@ -50,11 +50,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: calc(var(--grid-unit) * 2);
+  gap: calc(var(--grid-unit) * 2);
 }
 
 .footer__chapter-button {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   background: none;
   border: none;
   margin: calc(var(--grid-unit) * 2);
@@ -62,12 +64,23 @@
   padding: 0;
 }
 
+.footer__chapter-button:hover .footer__chapter-button__animation,
+.footer__chapter-button:focus .footer__chapter-button__animation{
+  transform: scale(1.25);
+}
+
 .footer__chapter-button--selected {
   background-color: var(--color-1);
 }
 
+.footer__chapter-button--selected:hover .footer__chapter-button__animation,
+.footer__chapter-button--selected:focus .footer__chapter-button__animation{
+  transform: scale(1);
+}
+
 .footer__chapter-button__animation {
   pointer-events: none;
+  transition: transform var(--animation-duration-unit) var(--animation-easing);
 }
 
 .story-radio-input {
