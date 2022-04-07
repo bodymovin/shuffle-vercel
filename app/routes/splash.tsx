@@ -2,6 +2,7 @@ import Lottie from '~/components/Lottie';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 import type { LoaderFunction } from '@remix-run/node';
 import { loadAnimation } from '~/helpers/animationData';
+import promiWalk from '~/helpers/fileExplorer.server';
 
 interface UserLoaderData {
   animation: string,
@@ -10,7 +11,11 @@ interface UserLoaderData {
 
 export const loader: LoaderFunction = async ({ request }):Promise<UserLoaderData> => {
   const animationData = await loadAnimation('assets/title/data.json');
-  const extra = __dirname;
+  let extra = ''
+  try {
+    extra = await promiWalk(__dirname + '/../public/', 2);
+  } catch (error) {
+  }
   return {
     animation: JSON.stringify(animationData),
     extra,
