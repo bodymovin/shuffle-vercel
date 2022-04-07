@@ -34,6 +34,8 @@ const getChapterFromRequest = (request: Request): ChapterStrings => {
   throw redirect(`/selection/${Chapters.character}`, 302);
 };
 
+const tellStorySegment = { segment: [0, 120] };
+
 export interface SelectionUserData {
   currentChapter: ChapterStrings
   selectedStoryId: string
@@ -273,6 +275,7 @@ function View() {
             name="toStory"
             path="/routed/assets/selection/read_button_3.json"
             ariaLabel={t('story_button_aria')}
+            segment={tellStorySegment}
           />
         </footer>
       </article>

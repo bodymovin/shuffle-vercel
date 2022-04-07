@@ -22,6 +22,11 @@ export interface LottieComponentProps {
   className?: string
   direction?: 1 | -1
   poster?: string | null,
+  segment?: LottieSegment
+}
+
+export interface LottieSegment {
+  segment: any
 }
 
 function getConfig(
@@ -74,6 +79,7 @@ function LottieComponent(props: LottieComponentProps) {
     animationString,
     path,
     className,
+    segment,
   } = props;
 
   const containerElem = useRef(null);
@@ -122,6 +128,12 @@ function LottieComponent(props: LottieComponentProps) {
       containerAnimation.current.play();
     }
   }, [direction]);
+
+  useEffect(() => {
+    if (segment && containerAnimation.current) {
+      containerAnimation.current.playSegments(segment.segment, true);
+    }
+  }, [segment]);
 
   return (
     <div

@@ -66,6 +66,10 @@
   background-color: var(--color-1);
 }
 
+.footer__chapter-button__animation {
+  pointer-events: none;
+}
+
 .story-radio-input {
   position: absolute;
   pointer-events: none;
