@@ -6,7 +6,7 @@ import path from 'path';
 
 console.log('=======================');
 console.log(__dirname);
-const localesPath = process.env.NODE_ENV === 'development' ? './public/locales' : './output/server/pages/locales';
+const localesPath = process.env.NODE_ENV === 'development' ? './public/locales' : './output/server/pages/public/locales';
 
 const backend = new FileSystemBackend(path.resolve(localesPath));
 
