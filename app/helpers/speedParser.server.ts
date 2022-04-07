@@ -5,13 +5,13 @@ import { SpeedData, Speeds } from '~/interfaces/speeds';
 const getSpeedFromCookie = async (request: Request): Promise<Speeds> => {
   const cookie = await getUserPrefsFromRequest(request);
 
-  return cookie.speed || Speeds.SLOW;
+  return cookie.speed || Speeds.MEDIUM;
 };
 
 const extractSpeedFromRequest = async (request: Request): Promise<SpeedData> => {
   const body: any = await bodyParser.toJSON(request);
   const speed: SpeedData = {
-    speed: body.speed || Speeds.SLOW,
+    speed: body.speed || Speeds.MEDIUM,
   };
   return speed;
 };
