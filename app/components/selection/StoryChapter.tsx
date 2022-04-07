@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
 import { SelectionStory } from '~/helpers/story';
+import { withTranslation } from 'react-i18next';
 import InlineSVG from '../InlineSVG';
 import LottieComponent from '../Lottie';
 
@@ -23,6 +24,7 @@ interface StoryChapterProps {
   story: SelectionStory
   selectedStoryId: string
   user: User
+  t: any
 }
 
 function StoryChapter(props: StoryChapterProps) {
@@ -30,6 +32,7 @@ function StoryChapter(props: StoryChapterProps) {
     story,
     selectedStoryId,
     user,
+    t,
   } = props;
   const isLocked = !story.enabled;
   const classNames = ['story-container__scroller__element'];
@@ -86,7 +89,7 @@ function StoryChapter(props: StoryChapterProps) {
                 <figcaption
                   className="story__container__lock__content__caption"
                 >
-                  {`you need to play ${3 - user.games} more time(s) \r\n to unlock this story`}
+                  {t('story_locked', { key: 3 - user.games })}
                 </figcaption>
               </div>
             </div>
@@ -96,4 +99,4 @@ function StoryChapter(props: StoryChapterProps) {
     </div>
   );
 }
-export default StoryChapter;
+export default withTranslation('selection')(StoryChapter);

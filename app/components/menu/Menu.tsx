@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { Link, useFetcher, useMatches } from '@remix-run/react';
 import { useEffect, useState } from 'react';
+import { TFunction, useTranslation } from 'react-i18next';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { Chapters } from '~/helpers/enums/chapters';
 import { ColorSet } from '~/interfaces/colors';
@@ -25,7 +26,7 @@ function buildPalette(colors:ColorSet) {
   );
 }
 
-function buildPaletteForm(colors:ColorSet, fetcher:any) {
+function buildPaletteForm(colors:ColorSet, fetcher:any, t:TFunction<'index'>) {
   return (
     <div className="palette">
       <fetcher.Form method="post" action="/color">
@@ -37,7 +38,7 @@ function buildPaletteForm(colors:ColorSet, fetcher:any) {
           className="palette__button"
           name="palette"
           value="1"
-          aria-label={`Change palette to colors: ${colors.color1}, ${colors.color3}, ${colors.color3}`}
+          aria-label={t('change_palette_aria', { key1: colors.color1, key2: colors.color2, key3: colors.color3 })}
         >
           {buildPalette(colors)}
         </button>
@@ -46,53 +47,53 @@ function buildPaletteForm(colors:ColorSet, fetcher:any) {
   );
 }
 
-function buildSpeedForm(fetcher: any) {
+function buildSpeedForm(fetcher: any, t: TFunction<'index'>) {
   return (
     <div className="speed">
-      <p className="speed__title">Choose site speed</p>
+      <p className="speed__title">{t('menu_site_speed_title')}</p>
       <fetcher.Form method="post" action="/speed" className="speed__form">
         <button
           type="submit"
           className="speed__form__button"
           name="speed"
           value="static"
-          aria-label="Change site to slow speed"
+          aria-label={t('menu_site_speed_no_animation_aria')}
         >
-          No animation
+          {t('menu_site_speed_no_animation')}
         </button>
         <button
           type="submit"
           className="speed__form__button"
           name="speed"
           value="slow"
-          aria-label="Change site to slow speed"
+          aria-label={t('menu_site_speed_slow_aria')}
         >
-          Slow
+          {t('menu_site_speed_slow')}
         </button>
         <button
           type="submit"
           className="speed__form__button"
           name="speed"
           value="medium"
-          aria-label="Change site to medium speed"
+          aria-label={t('menu_site_speed_medium_aria')}
         >
-          Medium
+          {t('menu_site_speed_medium')}
         </button>
         <button
           type="submit"
           className="speed__form__button"
           name="speed"
           value="fast"
-          aria-label="Change site to fast speed"
+          aria-label={t('menu_site_speed_fast_aria')}
         >
-          Fast
+          {t('menu_site_speed_fast')}
         </button>
       </fetcher.Form>
     </div>
   );
 }
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
 function buildCustomPalette(colors:ColorSet, fetcher:any) {
   function handleChange(event: any) {
     fetcher.submit(event.currentTarget);
@@ -107,13 +108,13 @@ function buildCustomPalette(colors:ColorSet, fetcher:any) {
   );
 }
 
-function buildPalettePicker(fetcher: any) {
+function buildPalettePicker(fetcher: any, t: TFunction<'index'>) {
   return (
     <div>
-      <p className="palette__title">Choose palette</p>
-      {buildPaletteForm({ color1: '#353535', color2: '#FFEBD5', color3: '#F3E7D6' }, fetcher)}
-      {buildPaletteForm({ color1: '#e1e1e1', color2: '#30233c', color3: '#362b4b' }, fetcher)}
-      {buildPaletteForm({ color1: '#970e0e', color2: '#b1bcc6', color3: '#181ad0' }, fetcher)}
+      <p className="palette__title">{t('choose_palette')}</p>
+      {buildPaletteForm({ color1: '#353535', color2: '#FFEBD5', color3: '#F3E7D6' }, fetcher, t)}
+      {buildPaletteForm({ color1: '#e1e1e1', color2: '#30233c', color3: '#362b4b' }, fetcher, t)}
+      {buildPaletteForm({ color1: '#970e0e', color2: '#b1bcc6', color3: '#181ad0' }, fetcher, t)}
     </div>
   );
 }
@@ -140,16 +141,16 @@ function buildClipPath() {
   return rects;
 }
 
-function buildLoginForm(user: User) {
+function buildLoginForm(user: User, t:TFunction<'index'>) {
   if (user.id === ANONYMOUS_ID) {
     return (
-      <Link to="/login" className="login">Login</Link>
+      <Link to="/login" className="login" aria-label={t('menu_login')}>{t('menu_login')}</Link>
     );
   }
   return (
     <form action="/logout" method="post" className="logout">
-      <button type="submit" className="logout__button">
-        Logout
+      <button type="submit" className="logout__button" aria-label={t('menu_logout')}>
+        {t('menu_logout')}
       </button>
     </form>
   );
@@ -191,7 +192,7 @@ const buildSliderClass = (isMenuOpen: Boolean): string => {
   return buttonClasses.join(' ');
 };
 
-const buildNavButton = (matches: any[], isOpen: boolean) => {
+const buildNavButton = (matches: any[], isOpen: boolean, t:TFunction<'index'>) => {
   const isStoryPath = !!matches.find((match) => match.pathname === '/story');
 
   if (isStoryPath) {
@@ -199,7 +200,7 @@ const buildNavButton = (matches: any[], isOpen: boolean) => {
       <Link
         to={`/selection/${Chapters.character}`}
         className={buildNavLinkClass(isOpen)}
-        aria-label="Go back to build your story"
+        aria-label={t('menu_back_aria')}
       >
         {'<'}
       </Link>
@@ -213,6 +214,7 @@ function Menu(props: MenuInterface) {
   const { user } = props;
   const [isOpen, open] = useState(false);
   const matches = useMatches();
+  const { t } = useTranslation('index');
 
   useEffect(() => {
     open(false);
@@ -227,7 +229,7 @@ function Menu(props: MenuInterface) {
           type="button"
           className={buildMenuClass(isOpen)}
           onClick={toggleOpen}
-          aria-label="Main menu"
+          aria-label={t('main_menu')}
         >
           <svg
             width="50"
@@ -282,19 +284,19 @@ function Menu(props: MenuInterface) {
             </g>
           </svg>
         </button>
-        {buildNavButton(matches, isOpen)}
+        {buildNavButton(matches, isOpen, t)}
       </div>
       <div className={buildSliderClass(isOpen)}>
         {/* {buildCustomPalette(colors, fetcher)} */}
         <ul>
           <li>
-            {buildPalettePicker(fetcher)}
+            {buildPalettePicker(fetcher, t)}
           </li>
           <li>
-            {buildSpeedForm(fetcher)}
+            {buildSpeedForm(fetcher, t)}
           </li>
           <li>
-            {buildLoginForm(user)}
+            {buildLoginForm(user, t)}
           </li>
         </ul>
       </div>

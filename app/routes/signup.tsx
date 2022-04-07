@@ -6,10 +6,12 @@ import {
   Form, Link, useLoaderData,
 } from '@remix-run/react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { bodyParser } from 'remix-utils';
 import LottieComponent from '~/components/Lottie';
 import TextLottie from '~/components/lottie/TextLottie';
 import { getUserPrefsFromRequest, UserPrefs } from '~/cookies';
+import { i18n } from '~/i18n.server';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
 import { createUser, findUserByEmail } from '~/utils/user.server';
@@ -18,12 +20,13 @@ export const action: ActionFunction = async ({ request }) => {
   const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
   const user = await findUserByEmail(body.email);
+  const t = await i18n.getFixedT(request, 'index');
   if (user) {
-    session.flash('error', 'email already registered');
+    session.flash('error', t('error_email_registered'));
   } else if (!body.email || !body.password || !body.passwordRepeat || !body.name) {
-    session.flash('error', 'please complete all fields');
+    session.flash('error', t('error_missing_fields'));
   } else if (body.password !== body.passwordRepeat) {
-    session.flash('error', 'passwords don\'t match');
+    session.flash('error', t('error_passwords_mismatch'));
   } else {
     const userPrefs: UserPrefs = await getUserPrefsFromRequest(request);
     const newUser = await createUser(body.email, body.name, body.password, userPrefs.games || 0);
@@ -55,6 +58,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json(
     {
       error: session.get('error'),
+      i18n: await i18n.getTranslations(request, ['index']),
     },
     {
       headers: {
@@ -73,7 +77,7 @@ export function links() {
   ];
 }
 
-function Login() {
+function SignUp() {
   const data = useLoaderData();
 
   const [nameText, setNameText] = useState('');
@@ -96,6 +100,8 @@ function Login() {
     'form-container',
   ];
 
+  const { t } = useTranslation('index');
+
   return (
     <div className="wrapper">
       <div className="content">
@@ -115,7 +121,7 @@ function Login() {
             <input
               type="text"
               name="name"
-              placeholder="name"
+              placeholder={t('name_placeholder')}
               className="text-input"
               autoComplete="name"
               onFocus={onFocus}
@@ -125,7 +131,7 @@ function Login() {
             <input
               type="email"
               name="email"
-              placeholder="email"
+              placeholder={t('email_placeholder')}
               className="text-input"
               autoComplete="email"
               required
@@ -133,30 +139,30 @@ function Login() {
             <input
               type="password"
               name="password"
-              placeholder="password"
+              placeholder={t('password_placeholder')}
               className="text-input"
               autoComplete="password"
             />
             <input
               type="password"
               name="passwordRepeat"
-              placeholder="repeat password"
+              placeholder={t('repeat_password_placeholder')}
               className="text-input"
               autoComplete="off"
             />
-            <button type="submit" className="submit">Submit</button>
+            <button type="submit" className="submit">{t('submit_button')}</button>
           </Form>
           { data.error
           && (
             <div>{data.error}</div>
           )}
         </div>
-        <span className="or">Or</span>
-        <Link to="/login" className="link">Sign in</Link>
-        <span className="or">Or</span>
-        <Link to={`/selection/${ChapterType.character}`} className="link">Go to stories</Link>
+        <span className="or">{t('or_text')}</span>
+        <Link to="/login" className="link">{t('login_button')}</Link>
+        <span className="or">{t('or_text')}</span>
+        <Link to={`/selection/${ChapterType.character}`} className="link">{t('go_to_stories_button')}</Link>
       </div>
     </div>
   );
 }
-export default Login;
+export default SignUp;

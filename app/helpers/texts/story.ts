@@ -2,10 +2,10 @@ import { ChapterToContent } from '~/interfaces/chapters';
 import { Chapters } from '../enums/chapters';
 
 export const chaptersAriaLabels: ChapterToContent = {
-  [Chapters.character]: 'Read character chapter',
-  [Chapters.partner]: 'Read partner chapter',
-  [Chapters.object]: 'Read object chapter',
-  [Chapters.vehicle]: 'Read vehicle chapter',
-  [Chapters.path]: 'Read path chapter',
-  [Chapters.destination]: 'Read destination chapter',
+  [Chapters.character]: 'chapter_button_character_aria',
+  [Chapters.partner]: 'chapter_button_partner_aria',
+  [Chapters.object]: 'chapter_button_object_aria',
+  [Chapters.vehicle]: 'chapter_button_vehicle_aria',
+  [Chapters.path]: 'chapter_button_path_aria',
+  [Chapters.destination]: 'chapter_button_destination_aria',
 };

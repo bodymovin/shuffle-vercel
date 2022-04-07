@@ -13,6 +13,8 @@ import { chaptersAriaLabels } from '~/helpers/texts/story';
 import { ChapterStrings, ChapterToContent } from '~/interfaces/chapters';
 import styles from '~/styles/story.css';
 import { findFirstFreeStory, findStories, StoryWithChapters } from '~/utils/stories.server';
+import { i18n } from '~/i18n.server';
+import { TFunction, useTranslation } from 'react-i18next';
 
 const getChapterFromPath = (path: string): ChapterStrings | null => {
   const partParts = path.split('/');
@@ -28,6 +30,7 @@ interface UserStoryData {
   posters: ChapterToContent
   animationPaths: ChapterToContent
   texts: ChapterToContent
+  i18n: any
 }
 
 interface StoriesDictInterface {
@@ -113,6 +116,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<UserStoryData>
     posters,
     animationPaths,
     texts,
+    i18n: await i18n.getTranslations(request, ['index', 'story']),
   };
 };
 
@@ -130,6 +134,7 @@ function buildChapterButton(
   animationPaths: ChapterToContent,
   posters: ChapterToContent,
   currentChapter: ChapterStrings | null,
+  t: TFunction<'story'>,
 ) {
   const animationPath = animationPaths[chapter];
   const link = `/story/${chapter}`;
@@ -147,7 +152,7 @@ function buildChapterButton(
       key={chapter}
       to={link}
       className={className}
-      aria-label={chaptersAriaLabels[chapter]}
+      aria-label={t(chaptersAriaLabels[chapter])}
     >
       <div className="chapter__background" />
       <div className="chapter__anim">
@@ -174,6 +179,7 @@ function StoryComponent() {
     Chapters.path,
     Chapters.destination,
   ];
+  const { t } = useTranslation('story');
   return (
     <div className="wrapper">
       <div className="container">
@@ -182,6 +188,7 @@ function StoryComponent() {
           animationPaths,
           posters,
           currentChapter,
+          t,
         ))}
         { currentChapter
         && (

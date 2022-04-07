@@ -15,10 +15,12 @@ import styles from '~/styles/global.css';
 import menuStyles from '~/styles/menu.css';
 import lottieStyles from '~/styles/lottie.css';
 import { MetaFunction } from '@remix-run/react/routeModules';
+import { User } from '@prisma/client';
+import { i18n } from '~/i18n.server';
+import { useSetupTranslations } from 'remix-i18next';
 import { getColorsFromCookie } from './helpers/colorParser.server';
 import { ColorSet } from './interfaces/colors';
 import Menu from './components/menu/Menu';
-import { User } from '@prisma/client';
 import { getUser } from './utils/user.server';
 import { Speeds } from './interfaces/speeds';
 import { getSpeedFromCookie } from './helpers/speedParser.server';
@@ -38,6 +40,7 @@ interface UserData {
   colors: ColorSet
   user: User
   speed: Speeds
+  locale: any
 }
 
 export const loader: LoaderFunction = async ({ request }):Promise<UserData> => (
@@ -45,6 +48,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<UserData> => (
     colors: await getColorsFromCookie(request),
     speed: await getSpeedFromCookie(request),
     user: await getUser(request),
+    locale: await i18n.getLocale(request),
   }
 );
 
@@ -64,7 +68,10 @@ const buildSpeed = (speed: Speeds): string => {
 };
 
 export default function App() {
-  const { colors, user, speed } = useLoaderData<UserData>();
+  const {
+    colors, user, speed, locale,
+  } = useLoaderData<UserData>();
+  useSetupTranslations(locale);
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
     root.style.setProperty('--color-1', colors.color1);

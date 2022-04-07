@@ -13,8 +13,6 @@ export const loader: LoaderFunction = async ({ request }):Promise<null> => {
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.4' }}>
-      <h1>Welcome to Shuffle Stories</h1>
-    </div>
+    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.4' }} />
   );
 }

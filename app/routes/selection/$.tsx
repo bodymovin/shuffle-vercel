@@ -20,6 +20,8 @@ import {
   getStories, getUserStoryForChapterFromRequest, SelectionStory,
 } from '../../helpers/story';
 import { getSelectionSubTitleByChapter, getSelectionTitleByChapter } from '../../helpers/textData';
+import { useTranslation } from 'react-i18next';
+import { i18n } from '~/i18n.server';
 
 const getChapterFromRequest = (request: Request): ChapterStrings => {
   const urlData = new URL(request.url);
@@ -49,6 +51,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
   const chapter = getChapterFromRequest(request);
   const stories = await getStories();
   const selectedStoryId = await getUserStoryForChapterFromRequest(chapter, request, stories);
+  const t = await i18n.getFixedT(request, 'selection');
   const selectionStories = await Promise.all(
     await stories
       .map(async (story) => (
@@ -65,8 +68,8 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
     {
       currentChapter: chapter,
       chapterPaths: await getSelectionChapterButtons(),
-      title: await getSelectionTitleByChapter(chapter),
-      subtitle: await getSelectionSubTitleByChapter(chapter),
+      title: t(await getSelectionTitleByChapter(chapter)),
+      subtitle: t(await getSelectionSubTitleByChapter(chapter)),
       selectedStoryId,
       stories: selectionStories,
       user,
@@ -188,6 +191,8 @@ function View() {
 
   const currentStoryIndex = stories.findIndex((story) => story.id === currentStoryId);
 
+  const { t } = useTranslation('selection');
+
   return (
     <Form
       method="post"
@@ -211,7 +216,7 @@ function View() {
             onClick={(ev) => { ev.preventDefault(); navigateToNextStory(-1); }}
             className="story__navigation"
             disabled={currentStoryIndex <= 0}
-            aria-label="Previous story"
+            aria-label={t('story_previous_story_aria')}
           >
             <svg
               viewBox="0 0 54.01 106.02"
@@ -245,7 +250,7 @@ function View() {
             onClick={(ev) => { ev.preventDefault(); navigateToNextStory(1); }}
             className="story__navigation"
             disabled={currentStoryIndex >= stories.length - 1}
-            aria-label="Next story"
+            aria-label={t('story_next_story_aria')}
           >
             <svg
               viewBox="0 0 54.01 106.02"
@@ -267,7 +272,7 @@ function View() {
             isSelected={false}
             name="toStory"
             path="/routed/assets/selection/read_button_3.json"
-            ariaLabel="Tell your story"
+            ariaLabel={t('story_button_aria')}
           />
         </footer>
       </article>

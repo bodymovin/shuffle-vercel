@@ -1,0 +1,18 @@
+{
+  "story_locked": "you need to play {{key}} more time(s) \r\n to unlock this story",
+  "story_button_aria": "Tell your story",
+  "story_previous_story_aria": "Previous story",
+  "story_next_story_aria": "Next story",
+  "chapter_title_character": "The adventurer",
+  "chapter_title_partner": "The partner",
+  "chapter_title_object": "The object",
+  "chapter_title_vehicle": "The vehicle",
+  "chapter_title_path": "The path",
+  "chapter_title_destination": "The destination",
+  "chapter_subtitle_character": "An intrepid hero",
+  "chapter_subtitle_partner": "A curious companion",
+  "chapter_subtitle_object": "A useful device",
+  "chapter_subtitle_vehicle": "A peculiar ride",
+  "chapter_subtitle_path": "A perilous road",
+  "chapter_subtitle_destination": "A place to explore"
+}
