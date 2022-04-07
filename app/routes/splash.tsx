@@ -4,18 +4,23 @@ import type { LoaderFunction } from '@remix-run/node';
 import { loadAnimation } from '~/helpers/animationData';
 
 interface UserLoaderData {
-  animation: string
+  animation: string,
+  extra: any
 }
 
 export const loader: LoaderFunction = async ({ request }):Promise<UserLoaderData> => {
   const animationData = await loadAnimation('assets/title/data.json');
+  const extra = __dirname;
   return {
     animation: JSON.stringify(animationData),
+    extra,
   };
 };
 
 function Splash() {
-  const { animation } = useLoaderData<UserLoaderData>();
+  const { animation, extra } = useLoaderData<UserLoaderData>();
+
+  console.log('extra', extra);
   const navigate = useNavigate();
 
   const onComplete = () => {
