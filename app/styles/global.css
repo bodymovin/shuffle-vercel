@@ -18,8 +18,9 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: "Nunito";
+  font-family: "Nunito", sans-serif;
   font-weight: 400;
+  font-size: calc(var(--grid-unit) * 2);
 }
 
 * {
@@ -61,3 +62,14 @@ path.anim-color-3, rect.anim-color-3, .anim-color-3 path {
   stroke: var(--color-3);
 }
 
+@media only screen and (max-width: 600px) {
+  h1, h2 {
+    font-size: 1em;
+  }
+}
+
+@media (orientation: landscape) {
+  h1, h2 {
+    font-size: 1em;
+  }
+}
