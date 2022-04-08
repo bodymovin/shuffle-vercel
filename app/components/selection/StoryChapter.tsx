@@ -39,9 +39,9 @@ function StoryChapter(props: StoryChapterProps) {
     isFocused,
   } = props;
   const isLocked = !story.enabled;
-  const classNames = ['story-container__scroller__element'];
+  const classNames = ['scroller__element'];
   if (isLocked) {
-    classNames.push('story-container__scroller__element--disabled');
+    classNames.push('scroller__element--disabled');
   }
 
   const [lottieRef, setLottieState] = useLottieAnim();
@@ -57,7 +57,7 @@ function StoryChapter(props: StoryChapterProps) {
   return (
     <div key={story.id} className={classNames.join(' ')}>
       <input
-        className="story-radio-input"
+        className="scroller__element__input"
         key={`${story.id}__input`}
         type="radio"
         id={`radio_${story.id}`}
@@ -69,12 +69,12 @@ function StoryChapter(props: StoryChapterProps) {
       <label
         htmlFor={`radio_${story.id}`}
         key={`${story.id}__label`}
-        className="story"
+        className="scroller__element__label"
         id={`story-selection-${story.id}`}
       >
-        <figure className="story__container">
+        <figure className="scroller__element__figure">
           <div
-            className="story__container__border"
+            className="scroller__element__figure__border"
           />
           <LottieComponent
             loop={false}
@@ -83,19 +83,19 @@ function StoryChapter(props: StoryChapterProps) {
             animationString={story.animation}
             renderer="svg"
             ref={lottieRef}
-            className="story__container__animation"
+            className="scroller__element__figure__animation"
           />
           {isLocked
             && (
-            <div className="story__container__lock">
+            <div className="scroller__element__figure__lock">
               <div
-                className="story__container__lock__background"
+                className="scroller__element__figure__lock__background"
               />
               <div
-                className="story__container__lock__content"
+                className="scroller__element__figure__lock__content"
               >
                 <figure
-                  className="story__container__lock__content__figure"
+                  className="scroller__element__figure__lock__content__figure"
                 >
                   <InlineSVG
                     content={lockIconContent}
@@ -103,7 +103,7 @@ function StoryChapter(props: StoryChapterProps) {
                   />
                 </figure>
                 <figcaption
-                  className="story__container__lock__content__caption"
+                  className="scroller__element__figure__lock__content__caption"
                 >
                   {t('story_locked', { key: 3 - user.games })}
                 </figcaption>
