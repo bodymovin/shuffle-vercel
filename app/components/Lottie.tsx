@@ -1,5 +1,5 @@
-// import Lottie from 'lottie-web/build/player/lottie_worker';
-import Lottie from 'lottie-web';
+import Lottie from 'lottie-web/build/player/lottie_worker';
+// import Lottie from 'lottie-web';
 import type {
   AnimationItem, AnimationConfigWithPath, AnimationConfigWithData,
 } from 'lottie-web/build/player/lottie';
