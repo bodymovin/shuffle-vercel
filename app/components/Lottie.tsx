@@ -1,5 +1,4 @@
 // import Lottie from 'lottie-web/build/player/lottie_worker';
-import { useLoaderData } from '@remix-run/react';
 import Lottie from 'lottie-web';
 import type {
   AnimationItem, AnimationConfigWithPath, AnimationConfigWithData,
@@ -179,17 +178,17 @@ LottieComponentProps> = (props: LottieComponentProps, ref) => {
   );
 };
 
-// LottieComponent.defaultProps = {
-//   autoplay: false,
-//   loop: false,
-//   animationString: '',
-//   path: '',
-//   onComplete: () => {},
-//   onLoad: (anim: AnimationItem | null) => {},
-//   className: '',
-//   direction: 0,
-//   poster: null,
-//   renderer: 'svg',
-// };
+LottieComponent.defaultProps = {
+  autoplay: false,
+  loop: false,
+  animationString: '',
+  path: '',
+  onComplete: () => {},
+  onLoad: (anim: AnimationItem | null) => {},
+  className: '',
+  direction: 0,
+  poster: null,
+  renderer: 'svg',
+};
 
 export default forwardRef(LottieComponent);
