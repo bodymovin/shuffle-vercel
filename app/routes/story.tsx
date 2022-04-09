@@ -15,6 +15,7 @@ import styles from '~/styles/story.css';
 import { findFirstFreeStory, findStories, StoryWithChapters } from '~/utils/stories.server';
 import { i18n } from '~/i18n.server';
 import { TFunction, useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 
 const getChapterFromPath = (path: string): ChapterStrings | null => {
   const partParts = path.split('/');
@@ -164,6 +165,12 @@ function buildChapterButton(
   );
 }
 
+const enum ComponentStates {
+  INIT,
+  OPEN,
+  CLOSE,
+}
+
 function StoryComponent() {
   const location = useLocation();
   const currentChapter = getChapterFromPath(location.pathname);
@@ -177,6 +184,28 @@ function StoryComponent() {
     Chapters.destination,
   ];
   const { t } = useTranslation('story');
+
+  const [componentState, setComponentState] = useState(ComponentStates.INIT);
+
+  const toggleCollapse = () => setComponentState(
+    [ComponentStates.CLOSE].includes(componentState)
+      ? ComponentStates.OPEN
+      : ComponentStates.CLOSE,
+  );
+
+  useEffect(() => {
+    setComponentState(ComponentStates.INIT);
+  }, [currentChapter]);
+
+  const storyChapterContentClasses = [
+    'story-chapter__content',
+  ];
+  if (componentState === ComponentStates.CLOSE) {
+    storyChapterContentClasses.push('story-chapter__content--collapsed');
+  } else if (componentState === ComponentStates.OPEN) {
+    storyChapterContentClasses.push('story-chapter__content--expanded');
+  }
+
   return (
     <div className="wrapper">
       <div className="container">
@@ -187,16 +216,30 @@ function StoryComponent() {
           currentChapter,
           t,
         ))}
-        { currentChapter
-        && (
-          <div
-            className="story-chapter"
-            key={currentChapter}
-          >
-            {texts[currentChapter]}
-          </div>
-        )}
       </div>
+      { currentChapter
+      && (
+        <div
+          className="story-chapter"
+          key={currentChapter}
+        >
+          <div className={storyChapterContentClasses.join(' ')}>
+            <div className="story-chapter__collapse">
+              <button
+                type="button"
+                onClick={toggleCollapse}
+                className="story-chapter__collapse__button"
+                aria-label={t('chapter_story_collapse_button')}
+              >
+                <span className="story-chapter__collapse__button__icon">↓</span>
+              </button>
+            </div>
+            <span>
+              {texts[currentChapter]}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

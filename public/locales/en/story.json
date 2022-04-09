@@ -4,5 +4,6 @@
   "chapter_button_object_aria": "Read object chapter",
   "chapter_button_vehicle_aria": "Read vehicle chapter",
   "chapter_button_path_aria": "Read path chapter",
-  "chapter_button_destination_aria": "Read destination chapter"
+  "chapter_button_destination_aria": "Read destination chapter",
+  "chapter_story_collapse_button": "Hide text"
 }

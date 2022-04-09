@@ -68,7 +68,7 @@ path.anim-color-3, rect.anim-color-3, .anim-color-3 path {
   }
 }
 
-@media (orientation: landscape) {
+@media (orientation: landscape) and (max-width: 600px) {
   h1, h2 {
     font-size: 1em;
   }

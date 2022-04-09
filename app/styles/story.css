@@ -25,14 +25,61 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: calc(var(--grid-unit) * 4);
-  background-color: var(--color-2);
-  border-top: 1px solid var(--color-1);
   color: var(--color-1);
+  z-index: 2;
+}
+
+.story-chapter__content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--grid-unit) * 2);
   animation: text-anim var(--animation-duration-unit) var(--animation-easing);
   animation-delay: var(--animation-duration-unit);
+  padding: calc(var(--grid-unit) * 2);
+  background-color: var(--color-2);
+  border-top: 1px solid var(--color-1);
   animation-fill-mode: both;
-  z-index: 2;
+}
+
+.story-chapter__content--collapsed {
+  animation: text-anim-collapse var(--animation-duration-unit) var(--animation-easing);
+  animation-fill-mode: both;
+}
+
+.story-chapter__content--expanded {
+  animation: text-anim-expand var(--animation-duration-unit) var(--animation-easing);
+  animation-fill-mode: both;
+}
+
+.story-chapter__collapse {
+  align-self: end;
+  cursor: pointer;
+  width: calc(var(--grid-unit) * 4);
+  height: calc(var(--grid-unit) * 4);
+  transition: transform var(--animation-duration-unit) var(--animation-easing);
+  display: none;
+}
+
+.story-chapter__content--collapsed .story-chapter__collapse {
+  transform: translateY(calc(var(--grid-unit) * -4 - 100%));
+}
+
+.story-chapter__collapse__button {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--color-1);
+  background-color: var(--color-2);
+  color: var(--color-1);
+}
+
+.story-chapter__collapse__button__icon {
+  display: inline-block;
+  transition: transform var(--animation-duration-unit) var(--animation-easing);
+}
+
+.story-chapter__content--collapsed .story-chapter__collapse__button__icon {
+  transform: rotate(-180deg);
 }
 
 .chapter {
@@ -86,6 +133,12 @@
   height: 100%;
 }
 
+@media (orientation: landscape) {
+  .story-chapter__collapse {
+    display: block;
+  }
+}
+
 @keyframes inset-anim {
   0% {
     clip-path: inset(50% 50% 50% 50%);
@@ -131,6 +184,26 @@
   }
   100% {
     opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes text-anim-collapse {
+  0% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@keyframes text-anim-expand {
+  0% {
+    transform: translate3d(0, 100%, 0);
+    animation-timing-function: ease-in;
+  }
+  100% {
     transform: translate3d(0, 0, 0);
   }
 }
