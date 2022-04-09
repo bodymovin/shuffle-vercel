@@ -6,20 +6,19 @@ import { i18n } from '~/i18n.server';
 import { Language } from 'remix-i18next';
 
 interface UserLoaderData {
-  animation: string,
+  path: string,
   i18n: Record<string, Language>
 }
 
-export const loader: LoaderFunction = async ({ request }):Promise<UserLoaderData> => {
-  const animationData = await loadAnimation('assets/title/data.json');
-  return {
+export const loader: LoaderFunction = async ({ request }):Promise<UserLoaderData> => (
+  {
     i18n: await i18n.getTranslations(request, ['index']),
-    animation: JSON.stringify(animationData),
-  };
-};
+    path: 'assets/title/data.json',
+  }
+);
 
 function Splash() {
-  const { animation } = useLoaderData<UserLoaderData>();
+  const { path } = useLoaderData<UserLoaderData>();
 
   const navigate = useNavigate();
 
@@ -31,7 +30,7 @@ function Splash() {
     <Lottie
       loop={false}
       autoplay
-      animationString={animation}
+      path={path}
       renderer="svg"
       onComplete={onComplete}
     />
