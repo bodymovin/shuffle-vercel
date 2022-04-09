@@ -1,5 +1,7 @@
 import Lottie from '~/components/Lottie';
-import { PrefetchPageLinks, useLoaderData, useNavigate } from '@remix-run/react';
+import {
+  Link, PrefetchPageLinks, useLoaderData, useNavigate,
+} from '@remix-run/react';
 import type { LoaderFunction } from '@remix-run/node';
 import { loadAnimation } from '~/helpers/animationData';
 import { i18n } from '~/i18n.server';
@@ -34,7 +36,9 @@ function Splash() {
 
   return (
     <>
-      {shouldPrefetch && <PrefetchPageLinks page="/selection/character" />}
+      {shouldPrefetch && (
+        <PrefetchPageLinks page="/selection/character" />
+      )}
       <Lottie
         loop={false}
         autoplay
