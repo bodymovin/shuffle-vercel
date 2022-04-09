@@ -30,6 +30,7 @@ const buildNavButton = (matches: any[], isOpen: boolean, t:TFunction<'index'>) =
         to={`/selection/${Chapters.character}`}
         className={buildNavLinkClass(isOpen)}
         aria-label={t('menu_back_aria')}
+        prefetch="intent"
       >
         {'<'}
       </Link>

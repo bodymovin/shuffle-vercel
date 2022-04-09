@@ -1,10 +1,11 @@
 import Lottie from '~/components/Lottie';
-import { useLoaderData, useNavigate } from '@remix-run/react';
+import { PrefetchPageLinks, useLoaderData, useNavigate } from '@remix-run/react';
 import type { LoaderFunction } from '@remix-run/node';
 import { loadAnimation } from '~/helpers/animationData';
 import { i18n } from '~/i18n.server';
 import { Language } from 'remix-i18next';
 import { createSVG } from '~/helpers/svgToString';
+import { useState } from 'react';
 
 interface UserLoaderData {
   path: string,
@@ -25,19 +26,25 @@ function Splash() {
 
   const navigate = useNavigate();
 
+  const [shouldPrefetch, doPrefetch] = useState(false);
+
   const onComplete = () => {
     navigate('/selection/character');
   };
 
   return (
-    <Lottie
-      loop={false}
-      autoplay
-      path={path}
-      renderer="svg"
-      poster={poster}
-      onComplete={onComplete}
-    />
+    <>
+      {shouldPrefetch && <PrefetchPageLinks page="/selection/character" />}
+      <Lottie
+        loop={false}
+        autoplay
+        path={path}
+        renderer="svg"
+        poster={poster}
+        onComplete={onComplete}
+        onLoad={() => doPrefetch(true)}
+      />
+    </>
   );
 }
 export default Splash;

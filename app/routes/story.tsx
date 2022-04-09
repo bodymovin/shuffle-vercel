@@ -151,6 +151,7 @@ function buildChapterButton(
       to={link}
       className={className}
       aria-label={t(chaptersAriaLabels[chapter])}
+      prefetch="intent"
     >
       <div className="chapter__background" />
       <div className="chapter__anim">
