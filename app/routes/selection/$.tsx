@@ -14,14 +14,14 @@ import { getUser, getUserById, updateUser } from '~/utils/user.server';
 import { getSessionFromRequest, commitSession } from '~/sessions';
 import StoryChapter from '~/components/selection/StoryChapter';
 import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
+import { useTranslation } from 'react-i18next';
+import { i18n } from '~/i18n.server';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
 import {
   getStories, getUserStoryForChapterFromRequest, SelectionStory,
 } from '../../helpers/story';
 import { getSelectionSubTitleByChapter, getSelectionTitleByChapter } from '../../helpers/textData';
-import { useTranslation } from 'react-i18next';
-import { i18n } from '~/i18n.server';
 
 const getChapterFromRequest = (request: Request): ChapterStrings => {
   const urlData = new URL(request.url);
