@@ -25,6 +25,7 @@ import { getUser } from './utils/user.server';
 import { Speeds } from './interfaces/speeds';
 import { getSpeedFromCookie } from './helpers/speedParser.server';
 import { SpeedProvider } from './utils/providers/speed-provider';
+import { DynamicLinks } from "remix-utils";
 
 export const meta: MetaFunction = () => ({ title: 'Shuffle Stories' });
 
@@ -97,6 +98,7 @@ export default function App() {
         <meta name="keywords" content="Stories, Shuffle, animations" />
         <Meta />
         <Links />
+        <DynamicLinks />
       </head>
       <body>
         <SpeedProvider speed={speed}>

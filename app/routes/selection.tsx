@@ -1,4 +1,4 @@
-import { json, LinksFunction, LoaderFunction } from '@remix-run/node';
+import { json, LoaderFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { updateUserPrefs } from '~/cookies';
 import styles from '~/styles/selection.css';
@@ -9,13 +9,6 @@ export function links() {
     {
       rel: 'stylesheet',
       href: styles,
-    },
-    {
-      rel: 'preload',
-      href: '/routed/assets/story/3/character_selection.json',
-      type: 'application/json',
-      as: 'fetch',
-      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
