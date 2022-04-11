@@ -166,6 +166,7 @@ function buildChapterButton(
   );
 }
 
+// eslint-disable-next-line no-shadow
 const enum ComponentStates {
   INIT,
   OPEN,
