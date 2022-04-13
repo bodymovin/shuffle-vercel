@@ -26,6 +26,7 @@
   left: 0;
   width: 100%;
   color: var(--color-1);
+  pointer-events: none;
   z-index: 2;
 }
 
@@ -39,6 +40,7 @@
   background-color: var(--color-2);
   border-top: 1px solid var(--color-1);
   animation-fill-mode: both;
+  pointer-events: auto;
 }
 
 .story-chapter__content--collapsed {
