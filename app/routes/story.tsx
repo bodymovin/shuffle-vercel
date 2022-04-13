@@ -1,5 +1,6 @@
 import { Chapter } from '@prisma/client';
 import {
+  LinkDescriptor,
   LoaderFunction,
 } from '@remix-run/node';
 import {
@@ -15,6 +16,7 @@ import { getSelectedChapterPaths, getSelectedPosters, getSelectedStories, StoryW
 import { i18n } from '~/i18n.server';
 import { TFunction, useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
+import { DynamicLinksFunction } from 'remix-utils';
 
 const getChapterFromPath = (path: string): ChapterStrings | null => {
   const partParts = path.split('/');
@@ -32,6 +34,28 @@ interface UserStoryData {
   texts: ChapterToContent
   i18n: any
 }
+
+const dynamicLinks: DynamicLinksFunction<UserStoryData> = ({ data }):
+  LinkDescriptor[] => {
+  if (!data.animationPaths) {
+    return [];
+  }
+  const keys = Object.keys(data.animationPaths);
+  const crossOrigin = 'anonymous' as const;
+  const dynLinks = keys.map((key) => (
+    {
+      rel: 'prefetch',
+      href: data.animationPaths[key as Chapters],
+      type: 'application/json',
+      as: 'fetch',
+      crossOrigin,
+    }));
+  return dynLinks;
+};
+
+export const handle = {
+  dynamicLinks,
+};
 
 // eslint-disable-next-line arrow-body-style
 const findStoryChapter = (story: StoryWithChapters, chapterType: Chapters): Chapter => {
