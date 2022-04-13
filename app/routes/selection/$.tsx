@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
-  ActionFunction, LoaderFunction, redirect, json,
+  ActionFunction, LoaderFunction, redirect, json, LinkDescriptor,
 } from '@remix-run/node';
 import {
   useLoaderData, Form,
 } from '@remix-run/react';
-import { bodyParser } from 'remix-utils';
+import { bodyParser, DynamicLinksFunction } from 'remix-utils';
 import ChapterButton from '~/components/selection/ChapterButton';
 import SubmitButton from '~/components/selection/SubmitButton';
 import { ChapterToContent, ChapterStrings, ChapterNavigation } from '~/interfaces/chapters';
@@ -16,6 +16,7 @@ import StoryChapter from '~/components/selection/StoryChapter';
 import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
 import { useTranslation } from 'react-i18next';
 import { i18n } from '~/i18n.server';
+import { getSelectedChapterPaths, getSelectedStories } from '~/utils/stories.server';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
 import {
@@ -44,6 +45,7 @@ export interface SelectionUserData {
   subtitle: string
   stories: SelectionStory[]
   user: User,
+  selectedAnimationPaths: ChapterToContent
 }
 
 export const loader: LoaderFunction = async ({ request }):Promise<any> => {
@@ -66,6 +68,10 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
         }
       )),
   );
+  // Loading prefetch data
+  const userPrefs = await getUserPrefsFromRequest(request);
+  const selectedStories = await getSelectedStories(request);
+  const selectedAnimationPaths = await getSelectedChapterPaths(selectedStories, userPrefs);
   return json(
     {
       currentChapter: chapter,
@@ -75,6 +81,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
       selectedStoryId,
       stories: selectionStories,
       user,
+      selectedAnimationPaths,
     },
     {
       headers: {
@@ -82,6 +89,28 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
       },
     },
   );
+};
+
+const dynamicLinks: DynamicLinksFunction<SelectionUserData> = ({ data }):
+  LinkDescriptor[] => {
+  if (!data.selectedAnimationPaths) {
+    return [];
+  }
+  const keys = Object.keys(data.selectedAnimationPaths);
+  const crossOrigin = 'anonymous' as const;
+  const dynLinks = keys.map((key) => (
+    {
+      rel: 'prefetch',
+      href: data.selectedAnimationPaths[key as Chapters],
+      type: 'application/json',
+      as: 'fetch',
+      crossOrigin,
+    }));
+  return dynLinks;
+};
+
+export const handle = {
+  dynamicLinks,
 };
 
 export const action: ActionFunction = async ({ request }) => {

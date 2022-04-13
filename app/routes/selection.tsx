@@ -1,4 +1,4 @@
-import { json, LinksFunction, LoaderFunction } from '@remix-run/node';
+import { json, LoaderFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { updateUserPrefs } from '~/cookies';
 import styles from '~/styles/selection.css';
@@ -12,43 +12,52 @@ export function links() {
     },
     {
       rel: 'preload',
-      href: '/routed/assets/story/3/character_selection.json',
-      type: 'application/json',
-    },
-    {
-      rel: 'preload',
       href: '/routed/assets/selection/Adventurer.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
       href: '/routed/assets/selection/Partner.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
       href: '/routed/assets/selection/Object.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
       href: '/routed/assets/selection/Vehicle.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
       href: '/routed/assets/selection/Path.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
       href: '/routed/assets/selection/Destiny.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preload',
       href: '/routed/assets/selection/read_button_3.json',
       type: 'application/json',
+      as: 'fetch',
+      crossOrigin: 'anonymous',
     },
   ];
 }

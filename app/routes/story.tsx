@@ -8,11 +8,10 @@ import {
 import StoryVignette from '~/components/story/StoryVignette';
 import { getUserPrefsFromRequest } from '~/cookies';
 import { Chapters } from '~/helpers/enums/chapters';
-import { createSVG } from '~/helpers/svgToString';
 import { chaptersAriaLabels } from '~/helpers/texts/story';
 import { ChapterStrings, ChapterToContent } from '~/interfaces/chapters';
 import styles from '~/styles/story.css';
-import { findFirstFreeStory, findStories, StoryWithChapters } from '~/utils/stories.server';
+import { getSelectedChapterPaths, getSelectedPosters, getSelectedStories, StoryWithChapters } from '~/utils/stories.server';
 import { i18n } from '~/i18n.server';
 import { TFunction, useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -34,10 +33,6 @@ interface UserStoryData {
   i18n: any
 }
 
-interface StoriesDictInterface {
-  [key: string]: StoryWithChapters,
-}
-
 // eslint-disable-next-line arrow-body-style
 const findStoryChapter = (story: StoryWithChapters, chapterType: Chapters): Chapter => {
   return story.chapters.find((chapter) => chapter.type === chapterType)!;
@@ -45,48 +40,15 @@ const findStoryChapter = (story: StoryWithChapters, chapterType: Chapters): Chap
 
 export const loader: LoaderFunction = async ({ request }):Promise<UserStoryData> => {
   const userPrefs = await getUserPrefsFromRequest(request);
-  const defaultStory = await findFirstFreeStory();
-  if (!defaultStory) {
-    throw new Error('There are no stories?! What?!!');
-  }
-
-  const storiesSet = new Set();
-  storiesSet.add(userPrefs.character || defaultStory.id);
-  storiesSet.add(userPrefs.partner || defaultStory.id);
-  storiesSet.add(userPrefs.object || defaultStory.id);
-  storiesSet.add(userPrefs.vehicle || defaultStory.id);
-  storiesSet.add(userPrefs.path || defaultStory.id);
-  storiesSet.add(userPrefs.destination || defaultStory.id);
 
   // console.log(userPrefs)
-  const storyValueIterator = storiesSet.values();
-  const storyIds: string[] = Array.from(storyValueIterator) as string[];
-  const stories = await findStories(storyIds);
-  const storiesDict: StoriesDictInterface = stories.reduce((dict: any, story) => {
-    // eslint-disable-next-line no-param-reassign
-    dict[story.id] = story;
-    return dict;
-  }, {});
+  const stories = await getSelectedStories(request);
+  const animationPaths = await getSelectedChapterPaths(stories, userPrefs);
+  const posters = await getSelectedPosters(stories, userPrefs);
 
   // TODO: decide what to do if there are no stories still attached to the user
   const defaultStoryId = stories[0].id;
 
-  const posters: ChapterToContent = {
-    [Chapters.character]: await createSVG(`${storiesDict[userPrefs.character || defaultStoryId].path}character.svg`),
-    [Chapters.partner]: await createSVG(`${storiesDict[userPrefs.partner || defaultStoryId].path}partner.svg`),
-    [Chapters.object]: await createSVG(`${storiesDict[userPrefs.object || defaultStoryId].path}object.svg`),
-    [Chapters.vehicle]: await createSVG(`${storiesDict[userPrefs.vehicle || defaultStoryId].path}vehicle.svg`),
-    [Chapters.path]: await createSVG(`${storiesDict[userPrefs.path || defaultStoryId].path}path.svg`),
-    [Chapters.destination]: await createSVG(`${storiesDict[userPrefs.destination || defaultStoryId].path}destination.svg`),
-  };
-  const animationPaths: ChapterToContent = {
-    [Chapters.character]: `/routed${storiesDict[userPrefs.character || defaultStoryId].path}character_highlight.json`,
-    [Chapters.partner]: `/routed${storiesDict[userPrefs.partner || defaultStoryId].path}partner_highlight.json`,
-    [Chapters.object]: `/routed${storiesDict[userPrefs.object || defaultStoryId].path}object_highlight.json`,
-    [Chapters.vehicle]: `/routed${storiesDict[userPrefs.vehicle || defaultStoryId].path}vehicle_highlight.json`,
-    [Chapters.path]: `/routed${storiesDict[userPrefs.path || defaultStoryId].path}path_highlight.json`,
-    [Chapters.destination]: `/routed${storiesDict[userPrefs.destination || defaultStoryId].path}destination_highlight.json`,
-  };
   const translators = (await Promise.all(stories.map(async (story) => {
     // TODO: build locale path in a better way. Probably add it to the db
     const langPath = story.path.substring(story.path.lastIndexOf('/', story.path.lastIndexOf('/') - 1));
@@ -166,6 +128,7 @@ function buildChapterButton(
   );
 }
 
+// eslint-disable-next-line no-shadow
 const enum ComponentStates {
   INIT,
   OPEN,
