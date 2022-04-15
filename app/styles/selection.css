@@ -257,6 +257,7 @@
 .scroller__element__figure__lock__content__caption {
   flex: 0 0 auto;
   color: var(--color-1);
+  padding: calc(var(--grid-unit) * 2);
 }
 
 .scroller__element__input:checked + label .scroller__element__figure__border{
