@@ -1,5 +1,6 @@
 import { AnimationItem } from 'lottie-web';
 import {
+  ReactElement,
   useCallback, useEffect, useRef, useState,
 } from 'react';
 import InlineSVG from '~/components/InlineSVG';
@@ -34,7 +35,7 @@ const calculateSpeed = (speed: Speeds) => {
 export default function useComponentLottie(
   settings: ComponentLottieSettings,
 ): [
-  any /* TODO: look into this type */,
+  ReactElement /* TODO: look into this type */,
   LottieControls,
   AnimationItem | null,
 ] {

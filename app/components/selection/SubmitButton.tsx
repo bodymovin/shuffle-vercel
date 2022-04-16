@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import useLottie from '~/utils/hooks/useLottie';
-import { AnimationSegment } from 'lottie-web';
+import useLottie, { LottieSegmentTypes } from '~/utils/hooks/useLottie';
 
 export interface ChapterButtonProps {
   path: string
@@ -9,7 +8,7 @@ export interface ChapterButtonProps {
   isSelected: boolean
   name?: string
   ariaLabel: string
-  segment?: AnimationSegment
+  segment?: LottieSegmentTypes
 }
 
 function SubmitButton({
@@ -37,9 +36,10 @@ function SubmitButton({
       path,
       renderer: 'svg',
       direction: isSelected ? 1 : -1,
+    },
+    {
       className: 'footer__chapter-button__animation',
     },
-    buttonContainer,
   );
 
   useEffect(() => {
@@ -53,8 +53,20 @@ function SubmitButton({
       lottieControls.setDirection(isSelected ? 1 : -1);
     }
   }, [isSelected, lottieControls]);
-
-  return lottieElement;
+  return (
+    <button
+      key={id}
+      type="submit"
+      name={name}
+      className={`footer__chapter-button ${isSelected ? 'footer__chapter-button--selected' : ''}`}
+      value={value}
+      aria-label={ariaLabel}
+      onMouseOver={() => localSegment && setLocalSegment({ ...localSegment })}
+      onFocus={() => localSegment && setLocalSegment({ ...localSegment })}
+    >
+      {lottieElement}
+    </button>
+  );
 }
 
 SubmitButton.defaultProps = {

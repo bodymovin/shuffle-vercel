@@ -7,11 +7,12 @@ import Lottie, {
   AnimationSegment,
   RendererType,
 } from 'lottie-web';
-import {
+import React, {
   cloneElement,
   createElement,
   HTMLAttributes,
   isValidElement,
+  MutableRefObject,
   ReactElement,
   useEffect,
   useLayoutEffect,
@@ -30,9 +31,7 @@ export type LottieState = {
   playing: boolean;
 }
 
-export type LottieSegment = {
-  segment: any // TODO: fix this
-}
+export type LottieSegmentTypes = AnimationSegment | AnimationSegment[]
 
 type LottieEventListeners = {
   onComplete?: () => void;
@@ -47,7 +46,7 @@ export type LottieSettings = {
   renderer?: LottieRenderer,
   direction?: PlayDirection,
   poster?: string | null,
-  segment?: LottieSegment
+  segment?: LottieSegmentTypes
 }
 
 export type LottieControls = {
@@ -62,7 +61,7 @@ export type LottieControls = {
   loadAnimation: (settings: LottieSettings) => void;
   onComplete: () => void;
   onLoad: () => void;
-  playSegments: (segments: AnimationSegment | AnimationSegment[]) => void;
+  playSegments: (segments: LottieSegmentTypes) => void;
 }
 
 type LottieConfigType =
@@ -72,7 +71,7 @@ export type ElOrPropsType = HTMLAttributes<any> | ReactElement<HTMLAttributes<an
 
 function buildConfig(
   props: LottieSettings | null,
-  container: any,
+  container: HTMLElement | null,
 ): LottieConfigType {
   if (props && container) {
     if (props.path) {
@@ -97,9 +96,12 @@ function buildConfig(
   return null;
 }
 
-function getContainer(elOrProps: ElOrPropsType, containerRef: any) {
+function getContainer(
+  elOrProps: ElOrPropsType,
+  containerRef: MutableRefObject<HTMLElement | null>,
+) {
   let containerElement: ReactElement | null = null;
-  let props: any;
+  let props: HTMLAttributes<any> | null;
   if (isValidElement(elOrProps)) {
     containerElement = elOrProps;
     props = containerElement.props;
@@ -134,15 +136,15 @@ export default function useLottie(
   lottieSettings: LottieSettings,
   elOrProps: ElOrPropsType = null,
 ): [
-  any /* TODO: look into this type */,
+  ReactElement /* TODO: look into this type */,
   LottieControls,
   AnimationItem | null,
 ] {
   const [settings, setSettings] = useState<LottieSettings | null>(null);
-  const [currentContainer, setCurrentContainer] = useState(null);
+  const [currentContainer, setCurrentContainer] = useState<HTMLElement | null>(null);
   const [currentanimation, setCurrentAnimation] = useState<AnimationItem | null>(null);
 
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const animationRef = useRef<AnimationItem | null>(null);
   const settingsRef = useRef<LottieSettings | null>(null);
   const eventListenersRef = useRef<LottieEventListeners>({});
@@ -190,14 +192,6 @@ export default function useLottie(
     */
   }, [lottieSettings]);
 
-  // useEffect(() => {
-  //   if (animationRef.current) {
-  //     Object.keys(eventListeners).forEach((key: string) => {
-  //       animationRef.current[key] = eventListeners[key];
-  //     });
-  //   }
-  // }, [eventListeners, animationRef]);
-
   // This effect tests if the rendered DOM element has changed and needs to
   // reload the animation
   useLayoutEffect(() => {
@@ -237,7 +231,7 @@ export default function useLottie(
         animationRef.current.goToAndStop(position, isFrame);
       }
     },
-    playSegments: (segments: AnimationSegment | AnimationSegment[]) => {
+    playSegments: (segments: LottieSegmentTypes) => {
       if (animationRef.current) {
         animationRef.current.playSegments(segments);
       }

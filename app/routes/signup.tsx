@@ -8,7 +8,6 @@ import {
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { bodyParser } from 'remix-utils';
-import LottieComponent from '~/components/Lottie';
 import TextLottie from '~/components/lottie/TextLottie';
 import { getUserPrefsFromRequest, UserPrefs } from '~/cookies';
 import { i18n } from '~/i18n.server';
