@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Speeds } from '~/interfaces/speeds';
-import { LottieStates, useLottieAnim } from '~/utils/hooks/useLottieAnim';
 import { useSpeed } from '~/utils/providers/speed-provider';
-import LottieComponent from '../Lottie';
+import useComponentLottie from '~/utils/hooks/useComponentLottie';
 
 export interface StoryVignetteProps {
   poster: string
@@ -39,33 +38,32 @@ function StoryVignette({ animationPath, poster, isSelected }: StoryVignetteProps
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [animationPath, isSelected]);
+  }, [animationPath, isSelected, speed]);
 
-  const [lottieRef, setAnimationState] = useLottieAnim();
+  const [lottieElement, lottieControls] = useComponentLottie({
+    loop: false,
+    autoplay: false,
+    path,
+    renderer: 'svg',
+    className: 'chapter__anim_wrapper',
+    poster,
+    enabled: isActive,
+  });
 
   const onAnimationLoad = () => {
     if (isActive) {
-      setAnimationState(LottieStates.REPLAY);
+      lottieControls.goToAndPlay(0);
     }
   };
 
   useEffect(() => {
     if (isActive) {
-      setAnimationState(LottieStates.REPLAY);
+      lottieControls.replay();
     }
-  }, [isActive, setAnimationState]);
+  }, [isActive, lottieControls]);
 
-  return (
-    <LottieComponent
-      loop={false}
-      autoplay={false}
-      onLoad={onAnimationLoad}
-      path={path}
-      renderer="svg"
-      className="chapter__anim_wrapper"
-      poster={poster}
-      ref={lottieRef}
-    />
-  );
+  lottieControls.onLoad = onAnimationLoad;
+
+  return lottieElement;
 }
 export default StoryVignette;

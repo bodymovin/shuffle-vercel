@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import LottieComponent, { LottieSegment } from '../Lottie';
+import useLottie from '~/utils/hooks/useLottie';
+import { AnimationSegment } from 'lottie-web';
 
 export interface ChapterButtonProps {
   path: string
@@ -8,7 +9,7 @@ export interface ChapterButtonProps {
   isSelected: boolean
   name?: string
   ariaLabel: string
-  segment?: LottieSegment
+  segment?: AnimationSegment
 }
 
 function SubmitButton({
@@ -16,11 +17,7 @@ function SubmitButton({
 }: ChapterButtonProps) {
   const [localSegment, setLocalSegment] = useState(segment);
 
-  useEffect(() => {
-    setLocalSegment(segment);
-  }, [segment]);
-
-  return (
+  const buttonContainer = (
     <button
       key={id}
       type="submit"
@@ -30,18 +27,34 @@ function SubmitButton({
       aria-label={ariaLabel}
       onMouseOver={() => localSegment && setLocalSegment({ ...localSegment })}
       onFocus={() => localSegment && setLocalSegment({ ...localSegment })}
-    >
-      <LottieComponent
-        loop={false}
-        autoplay
-        path={path}
-        renderer="svg"
-        direction={isSelected ? 1 : -1}
-        segment={localSegment}
-        className="footer__chapter-button__animation"
-      />
-    </button>
+    />
   );
+
+  const [lottieElement, lottieControls] = useLottie(
+    {
+      loop: false,
+      autoplay: true,
+      path,
+      renderer: 'svg',
+      direction: isSelected ? 1 : -1,
+      className: 'footer__chapter-button__animation',
+    },
+    buttonContainer,
+  );
+
+  useEffect(() => {
+    if (localSegment) {
+      lottieControls.playSegments(localSegment);
+    }
+  }, [lottieControls, localSegment]);
+
+  useEffect(() => {
+    if (lottieControls) {
+      lottieControls.setDirection(isSelected ? 1 : -1);
+    }
+  }, [isSelected, lottieControls]);
+
+  return lottieElement;
 }
 
 SubmitButton.defaultProps = {

@@ -1,5 +1,7 @@
 import { AnimationItem } from 'lottie-web';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import InlineSVG from '~/components/InlineSVG';
 import { Speeds } from '~/interfaces/speeds';
 import { useSpeed } from '../providers/speed-provider';
@@ -65,17 +67,25 @@ export default function useComponentLottie(
     controls.setSpeed(calculateSpeed(speed));
   }, [speed, controls]);
 
+  useEffect(() => {
+    if (!settings.path && !settings.animationString && isLoaded) {
+      setLoaded(false);
+    }
+  }, [settings, isLoaded]);
+
   const compContainer = (
     <div
       className={`lottie-wrapper ${className}`}
     >
-      {!!settings.poster
+      {
+        !!settings.poster
         && (
-        <InlineSVG
-          content={settings.poster}
-          className={`lottie-poster ${isLoaded ? 'lottie-poster--hidden' : ''}`}
-        />
-        )}
+          <InlineSVG
+            content={settings.poster}
+            className={`lottie-poster ${isLoaded ? 'lottie-poster--hidden' : ''}`}
+          />
+        )
+      }
       {container}
     </div>
   );

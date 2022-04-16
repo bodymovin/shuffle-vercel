@@ -4,6 +4,7 @@ import Lottie, {
   AnimationEventCallback,
   AnimationEventName,
   AnimationItem,
+  AnimationSegment,
   RendererType,
 } from 'lottie-web';
 import {
@@ -11,13 +12,16 @@ import {
   createElement,
   HTMLAttributes,
   isValidElement,
-  ReactElement, useCallback, useEffect,
+  ReactElement,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
 
 type LottieRenderer = 'svg' | 'canvas' | 'html'
+
+type PlayDirection = 1 | -1;
 
 export type LottieState = {
   duration: number;
@@ -41,8 +45,7 @@ export type LottieSettings = {
   loop?: boolean,
   autoplay?: boolean,
   renderer?: LottieRenderer,
-  className?: string
-  direction?: 1 | -1
+  direction?: PlayDirection,
   poster?: string | null,
   segment?: LottieSegment
 }
@@ -51,12 +54,15 @@ export type LottieControls = {
   play: () => void;
   pause: () => void;
   stop: () => void;
-  goToAndPlay: (val: number, isFrame: boolean) => void;
-  goToAndStop: (val: number, isFrame: boolean) => void;
+  goToAndPlay: (val: number, isFrame?: boolean) => void;
+  goToAndStop: (val: number, isFrame?: boolean) => void;
+  replay: () => void;
   setSpeed: (num: number) => void;
+  setDirection: (direction: PlayDirection) => void;
   loadAnimation: (settings: LottieSettings) => void;
   onComplete: () => void;
   onLoad: () => void;
+  playSegments: (segments: AnimationSegment | AnimationSegment[]) => void;
 }
 
 type LottieConfigType =
@@ -134,6 +140,7 @@ export default function useLottie(
 ] {
   const [settings, setSettings] = useState<LottieSettings | null>(null);
   const [currentContainer, setCurrentContainer] = useState(null);
+  const [currentanimation, setCurrentAnimation] = useState<AnimationItem | null>(null);
 
   const containerRef = useRef(null);
   const animationRef = useRef<AnimationItem | null>(null);
@@ -151,11 +158,13 @@ export default function useLottie(
     const config = buildConfig(settings, currentContainer);
     if (currentContainer && config) {
       animationRef.current = Lottie.loadAnimation(config);
+      setCurrentAnimation(animationRef.current);
       addListenersToAnimation(animationRef.current, eventListenersRef.current);
     }
     return () => {
       if (animationRef.current) {
         animationRef.current.destroy();
+        animationRef.current = null;
       }
     };
   }, [currentContainer, settings]);
@@ -163,7 +172,10 @@ export default function useLottie(
   useEffect(() => {
     if (!settingsRef.current) {
       updateSettings(lottieSettings);
+    } else if (settingsRef.current.path !== lottieSettings.path) {
+      updateSettings(lottieSettings);
     }
+
     /* TODO: this doesn't work if functions are passed since they are different
     on each render. For now, updated settings will not create a new instance
 
@@ -210,19 +222,37 @@ export default function useLottie(
         animationRef.current.stop();
       }
     },
-    goToAndPlay: (position: number, isFrame: boolean) => {
+    replay: () => {
+      if (animationRef.current) {
+        animationRef.current.goToAndPlay(0);
+      }
+    },
+    goToAndPlay: (position: number, isFrame: boolean = false) => {
       if (animationRef.current) {
         animationRef.current.goToAndPlay(position, isFrame);
       }
     },
-    goToAndStop: (position: number, isFrame: boolean) => {
+    goToAndStop: (position: number, isFrame: boolean = false) => {
       if (animationRef.current) {
         animationRef.current.goToAndStop(position, isFrame);
+      }
+    },
+    playSegments: (segments: AnimationSegment | AnimationSegment[]) => {
+      if (animationRef.current) {
+        animationRef.current.playSegments(segments);
       }
     },
     setSpeed: (speed: number) => {
       if (animationRef.current) {
         animationRef.current.setSpeed(speed);
+      }
+    },
+    setDirection: (direction: PlayDirection) => {
+      if (animationRef.current) {
+        animationRef.current.setDirection(direction);
+        if (animationRef.current.isPaused) {
+          animationRef.current.play();
+        }
       }
     },
     loadAnimation: (newSettings: LottieSettings) => updateSettings(newSettings),
@@ -246,6 +276,5 @@ export default function useLottie(
       eventListenersRef.current.onLoad = callback;
     },
   };
-
-  return [container, controls, animationRef.current];
+  return [container, controls, currentanimation];
 }

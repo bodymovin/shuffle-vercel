@@ -1,9 +1,7 @@
-import Lottie from '~/components/Lottie';
 import {
-  Link, PrefetchPageLinks, useLoaderData, useNavigate,
+  PrefetchPageLinks, useLoaderData, useNavigate,
 } from '@remix-run/react';
 import type { LoaderFunction } from '@remix-run/node';
-import { loadAnimation } from '~/helpers/animationData';
 import { i18n } from '~/i18n.server';
 import { Language } from 'remix-i18next';
 import { createSVG } from '~/helpers/svgToString';
@@ -55,15 +53,6 @@ function Splash() {
         <PrefetchPageLinks page="/selection/character" />
       )}
       {lottieElement}
-      {/* <Lottie
-        loop={false}
-        autoplay
-        path={path}
-        renderer="svg"
-        poster={poster}
-        onComplete={onComplete}
-        onLoad={() => doPrefetch(true)}
-      /> */}
     </>
   );
 }
