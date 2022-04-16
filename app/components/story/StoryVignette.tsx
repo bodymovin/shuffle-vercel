@@ -47,14 +47,7 @@ function StoryVignette({ animationPath, poster, isSelected }: StoryVignetteProps
     renderer: 'svg',
     className: 'chapter__anim_wrapper',
     poster,
-    enabled: isActive,
   });
-
-  const onAnimationLoad = () => {
-    if (isActive) {
-      lottieControls.goToAndPlay(0);
-    }
-  };
 
   useEffect(() => {
     if (isActive) {
@@ -62,7 +55,16 @@ function StoryVignette({ animationPath, poster, isSelected }: StoryVignetteProps
     }
   }, [isActive, lottieControls]);
 
-  lottieControls.onLoad = onAnimationLoad;
+  useEffect(() => {
+    if (lottieControls) {
+      lottieControls.onLoad = () => {
+        if (isActive) {
+          lottieControls.goToAndPlay(0);
+        }
+      };
+    }
+  }, [lottieControls, isActive]);
+
 
   return lottieElement;
 }

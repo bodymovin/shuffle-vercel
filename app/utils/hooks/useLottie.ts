@@ -7,15 +7,14 @@ import Lottie, {
   AnimationSegment,
   RendererType,
 } from 'lottie-web';
-import React, {
+import {
   cloneElement,
   createElement,
   HTMLAttributes,
   isValidElement,
-  MutableRefObject,
   ReactElement,
+  useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -55,13 +54,14 @@ export type LottieControls = {
   stop: () => void;
   goToAndPlay: (val: number, isFrame?: boolean) => void;
   goToAndStop: (val: number, isFrame?: boolean) => void;
+  addEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => void;
   replay: () => void;
   setSpeed: (num: number) => void;
   setDirection: (direction: PlayDirection) => void;
   loadAnimation: (settings: LottieSettings) => void;
   onComplete: () => void;
   onLoad: () => void;
-  playSegments: (segments: LottieSegmentTypes) => void;
+  playSegments: (segments: LottieSegmentTypes, forceFlag?: boolean) => void;
 }
 
 type LottieConfigType =
@@ -98,7 +98,7 @@ function buildConfig(
 
 function getContainer(
   elOrProps: ElOrPropsType,
-  containerRef: MutableRefObject<HTMLElement | null>,
+  containerRef: any,
 ) {
   let containerElement: ReactElement | null = null;
   let props: HTMLAttributes<any> | null;
@@ -136,20 +136,26 @@ export default function useLottie(
   lottieSettings: LottieSettings,
   elOrProps: ElOrPropsType = null,
 ): [
-  ReactElement /* TODO: look into this type */,
-  LottieControls,
+  ReactElement,
+  LottieControls | null,
   AnimationItem | null,
 ] {
   const [settings, setSettings] = useState<LottieSettings | null>(null);
   const [currentContainer, setCurrentContainer] = useState<HTMLElement | null>(null);
-  const [currentanimation, setCurrentAnimation] = useState<AnimationItem | null>(null);
+  const [currentAnimation, setCurrentAnimation] = useState<AnimationItem | null>(null);
 
-  const containerRef = useRef<HTMLElement | null>(null);
   const animationRef = useRef<AnimationItem | null>(null);
   const settingsRef = useRef<LottieSettings | null>(null);
+  const controlsRef = useRef<LottieControls | null>(null);
   const eventListenersRef = useRef<LottieEventListeners>({});
 
-  const container: ReactElement | null = getContainer(elOrProps, containerRef);
+  const setRef = useCallback((node) => {
+    if (currentContainer !== node) {
+      setCurrentContainer(node);
+    }
+  }, []);
+
+  const container: ReactElement | null = getContainer(elOrProps, setRef);
 
   const updateSettings = (newSettings: LottieSettings) => {
     settingsRef.current = newSettings;
@@ -192,83 +198,78 @@ export default function useLottie(
     */
   }, [lottieSettings]);
 
-  // This effect tests if the rendered DOM element has changed and needs to
-  // reload the animation
-  useLayoutEffect(() => {
-    if (currentContainer !== containerRef.current) {
-      setCurrentContainer(containerRef.current);
-    }
-  });
-
-  const controls = {
-    play: () => {
-      if (animationRef.current) {
-        animationRef.current.play();
-      }
-    },
-    pause: () => {
-      if (animationRef.current) {
-        animationRef.current.pause();
-      }
-    },
-    stop: () => {
-      if (animationRef.current) {
-        animationRef.current.stop();
-      }
-    },
-    replay: () => {
-      if (animationRef.current) {
-        animationRef.current.goToAndPlay(0);
-      }
-    },
-    goToAndPlay: (position: number, isFrame: boolean = false) => {
-      if (animationRef.current) {
-        animationRef.current.goToAndPlay(position, isFrame);
-      }
-    },
-    goToAndStop: (position: number, isFrame: boolean = false) => {
-      if (animationRef.current) {
-        animationRef.current.goToAndStop(position, isFrame);
-      }
-    },
-    playSegments: (segments: LottieSegmentTypes) => {
-      if (animationRef.current) {
-        animationRef.current.playSegments(segments);
-      }
-    },
-    setSpeed: (speed: number) => {
-      if (animationRef.current) {
-        animationRef.current.setSpeed(speed);
-      }
-    },
-    setDirection: (direction: PlayDirection) => {
-      if (animationRef.current) {
-        animationRef.current.setDirection(direction);
-        if (animationRef.current.isPaused) {
+  useEffect(() => {
+    controlsRef.current = {
+      play: () => {
+        if (animationRef.current) {
           animationRef.current.play();
         }
-      }
-    },
-    loadAnimation: (newSettings: LottieSettings) => updateSettings(newSettings),
-    addEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => {
-      if (animationRef.current) {
-        animationRef.current.addEventListener(eventName, callback);
-      }
-    },
-    set onComplete(callback: () => void) {
-      if (animationRef.current) {
-        animationRef.current.removeEventListener('complete', eventListenersRef.current.onComplete);
-        animationRef.current.addEventListener('complete', callback);
-      }
-      eventListenersRef.current.onComplete = callback;
-    },
-    set onLoad(callback: () => void) {
-      if (animationRef.current) {
-        animationRef.current.removeEventListener('DOMLoaded', eventListenersRef.current.onComplete);
-        animationRef.current.addEventListener('DOMLoaded', callback);
-      }
-      eventListenersRef.current.onLoad = callback;
-    },
-  };
-  return [container, controls, currentanimation];
+      },
+      pause: () => {
+        if (animationRef.current) {
+          animationRef.current.pause();
+        }
+      },
+      stop: () => {
+        if (animationRef.current) {
+          animationRef.current.stop();
+        }
+      },
+      replay: () => {
+        if (animationRef.current) {
+          animationRef.current.goToAndPlay(0);
+        }
+      },
+      goToAndPlay: (position: number, isFrame: boolean = false) => {
+        if (animationRef.current) {
+          animationRef.current.goToAndPlay(position, isFrame);
+        }
+      },
+      goToAndStop: (position: number, isFrame: boolean = false) => {
+        if (animationRef.current) {
+          animationRef.current.goToAndStop(position, isFrame);
+        }
+      },
+      playSegments: (segments: LottieSegmentTypes, forceFlag: boolean = false) => {
+        if (animationRef.current) {
+          animationRef.current.playSegments(segments, forceFlag);
+        }
+      },
+      setSpeed: (speed: number) => {
+        if (animationRef.current) {
+          animationRef.current.setSpeed(speed);
+        }
+      },
+      setDirection: (direction: PlayDirection) => {
+        if (animationRef.current) {
+          animationRef.current.setDirection(direction);
+          if (animationRef.current.isPaused) {
+            animationRef.current.play();
+          }
+        }
+      },
+      loadAnimation: (newSettings: LottieSettings) => updateSettings(newSettings),
+      addEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => {
+        if (animationRef.current) {
+          animationRef.current.addEventListener(eventName, callback);
+        }
+      },
+      set onComplete(callback: () => void) {
+        if (animationRef.current) {
+          animationRef.current.removeEventListener('complete', eventListenersRef.current.onComplete);
+          animationRef.current.addEventListener('complete', callback);
+        }
+        eventListenersRef.current.onComplete = callback;
+      },
+      set onLoad(callback: () => void) {
+        if (animationRef.current) {
+          animationRef.current.removeEventListener('DOMLoaded', eventListenersRef.current.onComplete);
+          animationRef.current.addEventListener('DOMLoaded', callback);
+        }
+        eventListenersRef.current.onLoad = callback;
+      },
+    };
+  }, [currentAnimation]);
+
+  return [container, controlsRef.current, currentAnimation];
 }

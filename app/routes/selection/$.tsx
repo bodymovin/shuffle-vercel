@@ -17,6 +17,7 @@ import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
 import { useTranslation } from 'react-i18next';
 import { i18n } from '~/i18n.server';
 import { getSelectedChapterPaths, getSelectedStories } from '~/utils/stories.server';
+import { AnimationSegment } from 'lottie-web';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
 import {
@@ -35,7 +36,7 @@ const getChapterFromRequest = (request: Request): ChapterStrings => {
   throw redirect(`/selection/${Chapters.character}`, 302);
 };
 
-const tellStorySegment = { segment: [0, 120] };
+const tellStorySegment = [0, 120];
 
 export interface SelectionUserData {
   currentChapter: ChapterStrings
@@ -305,7 +306,8 @@ function View() {
             name="toStory"
             path="/routed/assets/selection/read_button_3.json"
             ariaLabel={t('story_button_aria')}
-            segment={tellStorySegment}
+            segment={tellStorySegment as AnimationSegment}
+            canChangeDirection={false}
           />
         </footer>
       </article>

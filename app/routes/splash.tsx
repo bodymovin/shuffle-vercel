@@ -5,7 +5,7 @@ import type { LoaderFunction } from '@remix-run/node';
 import { i18n } from '~/i18n.server';
 import { Language } from 'remix-i18next';
 import { createSVG } from '~/helpers/svgToString';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useComponentLottie from '~/utils/hooks/useComponentLottie';
 
 interface UserLoaderData {
@@ -39,13 +39,17 @@ function Splash() {
     },
   );
 
-  lottieControls.onComplete = () => {
-    navigate('/selection/character');
-  };
+  useEffect(() => {
+    if (lottieControls) {
+      lottieControls.onComplete = () => {
+        navigate('/selection/character');
+      };
 
-  lottieControls.onLoad = () => {
-    doPrefetch(true);
-  };
+      lottieControls.onLoad = () => {
+        doPrefetch(true);
+      };
+    }
+  }, [lottieControls, navigate, doPrefetch]);
 
   return (
     <>

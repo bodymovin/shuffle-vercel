@@ -9,25 +9,13 @@ export interface ChapterButtonProps {
   name?: string
   ariaLabel: string
   segment?: LottieSegmentTypes
+  canChangeDirection: boolean
 }
 
 function SubmitButton({
-  value, path, isSelected, id, name = 'redirect', ariaLabel, segment,
+  value, path, isSelected, id, name = 'redirect', ariaLabel, segment, canChangeDirection,
 }: ChapterButtonProps) {
   const [localSegment, setLocalSegment] = useState(segment);
-
-  const buttonContainer = (
-    <button
-      key={id}
-      type="submit"
-      name={name}
-      className={`footer__chapter-button ${isSelected ? 'footer__chapter-button--selected' : ''}`}
-      value={value}
-      aria-label={ariaLabel}
-      onMouseOver={() => localSegment && setLocalSegment({ ...localSegment })}
-      onFocus={() => localSegment && setLocalSegment({ ...localSegment })}
-    />
-  );
 
   const [lottieElement, lottieControls] = useLottie(
     {
@@ -43,16 +31,16 @@ function SubmitButton({
   );
 
   useEffect(() => {
-    if (localSegment) {
-      lottieControls.playSegments(localSegment);
+    if (localSegment && lottieControls) {
+      lottieControls.playSegments(localSegment, true);
     }
   }, [lottieControls, localSegment]);
 
   useEffect(() => {
-    if (lottieControls) {
+    if (lottieControls && canChangeDirection) {
       lottieControls.setDirection(isSelected ? 1 : -1);
     }
-  }, [isSelected, lottieControls]);
+  }, [isSelected, lottieControls, canChangeDirection]);
   return (
     <button
       key={id}
@@ -61,8 +49,8 @@ function SubmitButton({
       className={`footer__chapter-button ${isSelected ? 'footer__chapter-button--selected' : ''}`}
       value={value}
       aria-label={ariaLabel}
-      onMouseOver={() => localSegment && setLocalSegment({ ...localSegment })}
-      onFocus={() => localSegment && setLocalSegment({ ...localSegment })}
+      onMouseOver={() => localSegment && setLocalSegment([...localSegment])}
+      onFocus={() => localSegment && setLocalSegment([...localSegment])}
     >
       {lottieElement}
     </button>

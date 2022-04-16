@@ -65,7 +65,9 @@ export default function useComponentLottie(
   }, [animation, onAnimationLoaded]);
 
   useEffect(() => {
-    controls.setSpeed(calculateSpeed(speed));
+    if (controls) {
+      controls.setSpeed(calculateSpeed(speed));
+    }
   }, [speed, controls]);
 
   useEffect(() => {

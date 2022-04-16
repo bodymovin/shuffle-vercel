@@ -15,8 +15,9 @@ function ChapterButton({ chapter, currentChapter, path }: ChapterButtonProps) {
       isSelected={isSelected}
       path={path}
       value={chapter.path}
-      name='redirect'
+      name="redirect"
       ariaLabel={chapter.name}
+      canChangeDirection
     />
   );
 }

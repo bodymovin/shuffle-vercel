@@ -53,10 +53,12 @@ function StoryChapter(props: StoryChapterProps) {
   });
 
   useEffect(() => {
-    if (isFocused) {
-      lottieControls.replay();
-    } else {
-      lottieControls.goToAndStop(0);
+    if (lottieControls) {
+      if (isFocused) {
+        lottieControls.replay();
+      } else {
+        lottieControls.goToAndStop(0);
+      }
     }
   }, [isFocused, lottieControls]);
 
