@@ -8,6 +8,7 @@ import { i18n } from '~/i18n.server';
 import { Language } from 'remix-i18next';
 import { createSVG } from '~/helpers/svgToString';
 import { useState } from 'react';
+import useComponentLottie from '~/utils/hooks/useComponentLottie';
 
 interface UserLoaderData {
   path: string,
@@ -30,8 +31,22 @@ function Splash() {
 
   const [shouldPrefetch, doPrefetch] = useState(false);
 
-  const onComplete = () => {
+  const [lottieElement, lottieControls] = useComponentLottie(
+    {
+      path,
+      autoplay: true,
+      loop: false,
+      renderer: 'svg',
+      poster,
+    },
+  );
+
+  lottieControls.onComplete = () => {
     navigate('/selection/character');
+  };
+
+  lottieControls.onLoad = () => {
+    doPrefetch(true);
   };
 
   return (
@@ -39,7 +54,8 @@ function Splash() {
       {shouldPrefetch && (
         <PrefetchPageLinks page="/selection/character" />
       )}
-      <Lottie
+      {lottieElement}
+      {/* <Lottie
         loop={false}
         autoplay
         path={path}
@@ -47,7 +63,7 @@ function Splash() {
         poster={poster}
         onComplete={onComplete}
         onLoad={() => doPrefetch(true)}
-      />
+      /> */}
     </>
   );
 }
