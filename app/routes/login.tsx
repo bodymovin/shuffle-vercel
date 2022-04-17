@@ -12,8 +12,16 @@ import styles from '~/styles/login.css';
 import { findUserByEmailAndPassword, getUser } from '~/utils/user.server';
 import { i18n } from '~/i18n.server';
 import { useTranslation } from 'react-i18next';
+import { authenticator } from '~/utils/auth.server';
 
 export const action: ActionFunction = async ({ request }) => {
+  try {
+    const sbUser = await authenticator.authenticate('sb', request);
+    console.log(sbUser);
+  } catch (error) {
+    console.log('SB ERROR');
+    console.log(error);
+  }
   const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
   const user = await findUserByEmailAndPassword(body.email, body.password);

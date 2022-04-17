@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { redirect } from '@remix-run/node';
+import supabaseClient from '~/helpers/supabase/client.server';
 import { getUserPrefsFromRequest } from '~/cookies';
 import { errorCodes } from '~/helpers/constants/prisma';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
@@ -18,6 +19,26 @@ export const getUserById = async (id: string): Promise<User | null> => {
 };
 
 export const createUser = async (
+  email: string,
+  name: string,
+  password: string,
+  games: number,
+): Promise<User | null> => {
+  const { user, session, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+  });
+  console.log(user, session, error);
+  return {
+    email,
+    name,
+    password,
+    id: 'a',
+    games: 0,
+  };
+};
+
+export const createUser2 = async (
   email: string,
   name: string,
   password: string,
@@ -119,3 +140,9 @@ export const getUser = async (request: Request): Promise<User> => {
   }
   return user;
 };
+
+export const getSupabaseUser = async (request: Request): Promise<any> => {
+  const user = await supabaseClient.auth.api.getUserByCookie(request);
+  console.log('user', user);
+  return user;
+}
