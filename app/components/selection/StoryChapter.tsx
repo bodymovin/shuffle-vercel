@@ -1,5 +1,5 @@
-import { User } from '@prisma/client';
 import { SelectionStory } from '~/helpers/story';
+import { User } from '~/interfaces/user';
 import { withTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import useComponentLottie from '~/utils/hooks/useComponentLottie';

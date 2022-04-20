@@ -15,9 +15,10 @@ import styles from '~/styles/global.css';
 import menuStyles from '~/styles/menu.css';
 import lottieStyles from '~/styles/lottie.css';
 import { MetaFunction } from '@remix-run/react/routeModules';
-import { User } from '@prisma/client';
 import { i18n } from '~/i18n.server';
 import { useSetupTranslations } from 'remix-i18next';
+import { DynamicLinks } from 'remix-utils';
+import { User } from '~/interfaces/user';
 import { getColorsFromCookie } from './helpers/colorParser.server';
 import { ColorSet } from './interfaces/colors';
 import Menu from './components/menu/Menu';
@@ -25,7 +26,6 @@ import { getUser } from './utils/user.server';
 import { Speeds } from './interfaces/speeds';
 import { getSpeedFromCookie } from './helpers/speedParser.server';
 import { SpeedProvider } from './utils/providers/speed-provider';
-import { DynamicLinks } from "remix-utils";
 
 export const meta: MetaFunction = () => ({ title: 'Shuffle Stories' });
 

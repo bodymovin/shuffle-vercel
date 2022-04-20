@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
 import { useFetcher, useMatches } from '@remix-run/react';
 import { useEffect, useState } from 'react';
+import { User } from '~/interfaces/user';
 import LoginForm from './LoginForm';
 import MainMenu from './MainMenu';
 import PalettePicker from './PalettePicker';

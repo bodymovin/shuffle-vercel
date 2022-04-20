@@ -23,8 +23,10 @@
   "repeat_password_placeholder": "Repeat your password",
   "or_text": "Or",
   "signup_button": "Sign up",
-  "error_email_registered": "email already registered",
-  "error_missing_fields": "please complete all fields",
-  "error_passwords_mismatch": "passwords don't match",
-  "error_wrong_email_pass": "wrong email or password"
+  "error_email_registered": "Email already registered",
+  "error_missing_fields": "Please complete all fields",
+  "error_passwords_mismatch": "Passwords don't match",
+  "error_wrong_email_pass": "Wrong email or password",
+  "error_user_registered": "User is already registered. Try logging in.",
+  "error_generic_message": "Something went wrong."
 }

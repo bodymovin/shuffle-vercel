@@ -1,5 +1,5 @@
-import { User } from '@prisma/client';
 import { Link } from '@remix-run/react';
+import { User } from '~/interfaces/user';
 import { withTranslation } from 'react-i18next';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 

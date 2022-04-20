@@ -13,34 +13,39 @@ import { getUserPrefsFromRequest, UserPrefs } from '~/cookies';
 import { i18n } from '~/i18n.server';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
-import { createUser, findUserByEmail } from '~/utils/user.server';
+import { createUser, getSession, getUser, loginUser } from '~/utils/user.server';
 
 export const action: ActionFunction = async ({ request }) => {
+  const clonedRequest = request.clone();
   const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
-  const user = await findUserByEmail(body.email);
   const t = await i18n.getFixedT(request, 'index');
-  if (user) {
-    session.flash('error', t('error_email_registered'));
-  } else if (!body.email || !body.password || !body.passwordRepeat || !body.name) {
+  let errorMessage;
+  if (!body.email || !body.password || !body.passwordRepeat || !body.name) {
     session.flash('error', t('error_missing_fields'));
   } else if (body.password !== body.passwordRepeat) {
     session.flash('error', t('error_passwords_mismatch'));
   } else {
     const userPrefs: UserPrefs = await getUserPrefsFromRequest(request);
-    const newUser = await createUser(body.email, body.name, body.password, userPrefs.games || 0);
-    if (newUser) {
-      session.set('userId', newUser.id);
-      if (session.get('userId')) {
-        return redirect(`/selection/${ChapterType.character}`, {
-          headers: {
-            'Set-Cookie': await commitSession(session),
-          },
-        });
+    let newUser;
+    try {
+      newUser = await createUser(body.email, body.name, body.password, userPrefs.games || 0);
+    } catch (error: any) {
+      if (error.status === 400) {
+        errorMessage = t('error_user_registered');
       }
-    } else {
-      session.flash('error', 'something went wrong');
     }
+
+    if (newUser) {
+      // TODO: check if this is the best way to login the user after signup
+      await loginUser(clonedRequest);
+      return redirect(`/selection/${ChapterType.character}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
+    session.flash('error', errorMessage || t('error_generic_message'));
   }
   return json({}, {
     headers: {
@@ -51,7 +56,8 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSessionFromRequest(request);
-  if (session.get('userId')) {
+  const user = await getSession(request);
+  if (user) {
     return redirect(`/selection/${ChapterType.character}`);
   }
   return json(

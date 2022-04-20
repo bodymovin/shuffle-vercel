@@ -3,38 +3,27 @@ import {
   ActionFunction, json, LoaderFunction, redirect,
 } from '@remix-run/node';
 import {
-  Form, Link, useLoaderData,
+  Form, Link, useLoaderData, useTransition,
 } from '@remix-run/react';
-import { bodyParser } from 'remix-utils';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
-import { findUserByEmailAndPassword, getUser } from '~/utils/user.server';
+import { getUser, loginUser } from '~/utils/user.server';
 import { i18n } from '~/i18n.server';
 import { useTranslation } from 'react-i18next';
-import { authenticator } from '~/utils/auth.server';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
-    const sbUser = await authenticator.authenticate('sb', request);
-    console.log(sbUser);
-  } catch (error) {
-    console.log('SB ERROR');
-    console.log(error);
+    await loginUser(request);
+  } catch (error: any) {
+    if (error.status === 302) {
+      throw error;
+    }
   }
-  const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
-  const user = await findUserByEmailAndPassword(body.email, body.password);
   const t = await i18n.getFixedT(request, 'index');
-  if (user) {
-    session.set('userId', user.id);
-    return redirect(`/selection/${ChapterType.character}`, {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    });
-  }
   session.flash('error', t('error_wrong_email_pass'));
+
   return json({}, {
     headers: {
       'Set-Cookie': await commitSession(session),
@@ -43,9 +32,11 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  //
   const session = await getSessionFromRequest(request);
+  const url = new URL(request.url);
   const user = await getUser(request);
-  if (user.id !== ANONYMOUS_ID) {
+  if (user.id !== ANONYMOUS_ID && !url.searchParams.get('status')) {
     return redirect(`/selection/${ChapterType.character}`);
   }
   return json(
@@ -73,6 +64,8 @@ export function links() {
 function Login() {
   const data = useLoaderData();
   const { t } = useTranslation('index');
+  const transition = useTransition();
+  console.log('transition', transition);
 
   return (
     <div className="wrapper">

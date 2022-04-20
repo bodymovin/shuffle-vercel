@@ -41,6 +41,12 @@ model User {
   games   Int @default(0)
 }
 
+model Profile {
+  id      String @unique
+  name    String @default("")
+  games   Int @default(0)
+}
+
 enum ChapterType {
   character    @map("character")
   partner      @map("partner")
