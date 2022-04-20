@@ -59,8 +59,12 @@ export default function useComponentLottie(
       if (currentEventListeners.current && currentEventListeners.current.DOMLoaded) {
         animation.removeEventListener('DOMLoaded', currentEventListeners.current.DOMLoaded);
       }
-      animation.addEventListener('DOMLoaded', onAnimationLoaded);
-      currentEventListeners.current.DOMLoaded = onAnimationLoaded;
+      if (animation.isLoaded) {
+        onAnimationLoaded();
+      } else {
+        animation.addEventListener('DOMLoaded', onAnimationLoaded);
+        currentEventListeners.current.DOMLoaded = onAnimationLoaded;
+      }
     }
   }, [animation, onAnimationLoaded]);
 
