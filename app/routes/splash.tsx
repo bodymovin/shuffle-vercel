@@ -36,6 +36,9 @@ function Splash() {
       loop: false,
       renderer: 'svg',
       poster,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice',
+      },
     },
   );
 

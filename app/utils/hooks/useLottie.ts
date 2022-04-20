@@ -6,6 +6,7 @@ import Lottie, {
   AnimationItem,
   AnimationSegment,
   RendererType,
+  SVGRendererConfig,
 } from 'lottie-web';
 import {
   cloneElement,
@@ -45,7 +46,8 @@ export type LottieSettings = {
   renderer?: LottieRenderer,
   direction?: PlayDirection,
   poster?: string | null,
-  segment?: LottieSegmentTypes
+  segment?: LottieSegmentTypes,
+  rendererSettings?: SVGRendererConfig,
 }
 
 export type LottieControls = {
@@ -81,6 +83,7 @@ function buildConfig(
         autoplay: props.autoplay,
         renderer: props.renderer,
         path: props.path,
+        rendererSettings: props.rendererSettings,
       };
     }
     if (props.animationString) {
@@ -90,6 +93,7 @@ function buildConfig(
         autoplay: props.autoplay,
         renderer: props.renderer,
         animationData: JSON.parse(props.animationString),
+        rendererSettings: props.rendererSettings,
       };
     }
   }
