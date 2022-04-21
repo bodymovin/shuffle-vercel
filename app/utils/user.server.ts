@@ -85,6 +85,6 @@ export const getUser = async (request: Request): Promise<User> => {
   return user;
 };
 
-export const loginUser = async (request: Request): Promise<any> => authenticator.authenticate('sb', request, {
-  successRedirect: '/login?status=success',
+export const loginUser = async (request: Request, redirect: string = '/login?status=success'): Promise<any> => authenticator.authenticate('sb', request, {
+  successRedirect: redirect,
 });

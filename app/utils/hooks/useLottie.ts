@@ -64,6 +64,7 @@ export type LottieControls = {
   onComplete: () => void;
   onLoad: () => void;
   playSegments: (segments: LottieSegmentTypes, forceFlag?: boolean) => void;
+  setText: (text: string, position: string[]) => void;
 }
 
 type LottieConfigType =
@@ -252,6 +253,21 @@ export default function useLottie(
           }
         }
       },
+      setText: (text: string, path: string[]) => {
+        if (animationRef.current && animationRef.current.isLoaded) {
+          let element = animationRef.current.renderer.elements;
+          path.forEach((pathPart) => {
+            if (element[pathPart]) {
+              element = element[pathPart];
+            }
+          });
+          try {
+            element.updateDocumentData({ t: text });
+          } catch (err) {
+
+          }
+        }
+      },
       loadAnimation: (newSettings: LottieSettings) => updateSettings(newSettings),
       addEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => {
         if (animationRef.current) {
@@ -267,6 +283,9 @@ export default function useLottie(
       },
       set onLoad(callback: () => void) {
         if (animationRef.current) {
+          // if (animationRef.current.isLoaded) {
+          //   callback();
+          // }
           animationRef.current.removeEventListener('DOMLoaded', eventListenersRef.current.onComplete);
           animationRef.current.addEventListener('DOMLoaded', callback);
         }
