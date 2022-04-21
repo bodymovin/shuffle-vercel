@@ -18,7 +18,7 @@ import useLottie from '~/utils/hooks/useLottie';
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = request.clone();
   await new Promise((res) => {
-    setTimeout(res, 1000);
+    setTimeout(res, 3000);
   });
   const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
@@ -89,22 +89,21 @@ function SignUp() {
   const [nameText, setNameText] = useState('');
   const [isAnimationComplete, setAnimationComplete] = useState(false);
 
-  const onFocus = () => {
-    setNameText('');
-  };
+  const navigate = useNavigate();
+  const transition = useTransition();
 
+  // This condition is true when signup is complete or is being submitted
+  const isTransitioning = signupComplete || transition.state === 'loading' || transition.state === 'submitting';
+
+  // Sets the animated text to the updated text field value
   const onBlur = (ev: React.FocusEvent<HTMLInputElement>) => {
     setNameText(ev.target.value);
   };
 
+  // Sets the animation complete flag to true when animation is finished
   const onAnimationComplete = useCallback(() => {
     setAnimationComplete(true);
   }, [setAnimationComplete]);
-
-  const navigate = useNavigate();
-  const transition = useTransition();
-
-  const isTransitioning = signupComplete || transition.state === 'loading' || transition.state === 'submitting';
 
   const [lottieElement, lottieControls] = useLottie(
     {
@@ -113,7 +112,7 @@ function SignUp() {
       loop: false,
     },
     {
-      className: 'form-anim',
+      className: `form-anim ${isTransitioning ? '' : 'form-anim--hidden'}`,
     },
   );
 
@@ -121,37 +120,34 @@ function SignUp() {
     lottieControls.onComplete = onAnimationComplete;
   }
 
+  // When form is submitted and animation complete, navigate to stories
   useEffect(() => {
     if (isAnimationComplete && signupComplete) {
       navigate('/selection/character');
     }
   }, [isAnimationComplete, signupComplete, navigate]);
 
+  // Sets the state of the animation.
+  // - If it is being submitted, the animation plays from the beginning.
+  // = If it is not submitted or it failed, animation stops.
   useEffect(() => {
     if (lottieControls) {
       if (isTransitioning) {
-        console.log('PASO 1')
         lottieControls.setText(nameText, ['0']);
         lottieControls.goToAndPlay(0);
       } else {
-        console.log('PASO 2')
-        lottieControls.setText('', ['0']);
         lottieControls.goToAndStop(0);
         setAnimationComplete(false);
       }
     }
   }, [isTransitioning, setAnimationComplete, lottieControls, nameText]);
 
-  const formClassNames = [
-    'form-container',
-  ];
-
   const { t } = useTranslation('index');
 
   return (
     <div className="wrapper">
       <div className="content">
-        <div className={formClassNames.join(' ')}>
+        <div className="form-container">
           {lottieElement}
           <Form
             className="form"
@@ -163,7 +159,6 @@ function SignUp() {
               placeholder={t('name_placeholder')}
               className="text-input"
               autoComplete="name"
-              onFocus={onFocus}
               onBlur={onBlur}
               style={{ opacity: isTransitioning ? '0' : '1' }}
             />

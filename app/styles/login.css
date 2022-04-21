@@ -33,6 +33,10 @@
   pointer-events: none;
 }
 
+.form-anim--hidden {
+  display: none;
+}
+
 .or {
   color: var(--color-1);
   padding: calc(var(--grid-unit) * 1);
