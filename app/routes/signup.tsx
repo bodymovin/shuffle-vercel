@@ -18,7 +18,7 @@ import useLottie from '~/utils/hooks/useLottie';
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = request.clone();
   await new Promise((res) => {
-    setTimeout(res, 3000);
+    setTimeout(res, 0);
   });
   const body: any = await bodyParser.toJSON(request);
   const session = await getSessionFromRequest(request);
@@ -133,7 +133,7 @@ function SignUp() {
   useEffect(() => {
     if (lottieControls) {
       if (isTransitioning) {
-        lottieControls.setText(nameText, ['0']);
+        lottieControls.setText(nameText, [0]);
         lottieControls.goToAndPlay(0);
       } else {
         lottieControls.goToAndStop(0);

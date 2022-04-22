@@ -1,4 +1,4 @@
-import Lottie, {
+import {
   AnimationConfigWithData,
   AnimationConfigWithPath,
   AnimationEventCallback,
@@ -8,6 +8,8 @@ import Lottie, {
   RendererType,
   SVGRendererConfig,
 } from 'lottie-web';
+import Lottie, {
+} from 'lottie-web/build/player/lottie_worker';
 import {
   cloneElement,
   createElement,
@@ -64,7 +66,7 @@ export type LottieControls = {
   onComplete: () => void;
   onLoad: () => void;
   playSegments: (segments: LottieSegmentTypes, forceFlag?: boolean) => void;
-  setText: (text: string, position: string[]) => void;
+  setText: (text: string, position: (string|number)[]) => void;
 }
 
 type LottieConfigType =
@@ -82,7 +84,7 @@ function buildConfig(
         container,
         loop: props.loop,
         autoplay: props.autoplay,
-        renderer: props.renderer,
+        renderer: props.renderer || 'svg',
         path: props.path,
         rendererSettings: props.rendererSettings,
       };
@@ -92,7 +94,7 @@ function buildConfig(
         container,
         loop: props.loop,
         autoplay: props.autoplay,
-        renderer: props.renderer,
+        renderer: props.renderer || 'svg',
         animationData: JSON.parse(props.animationString),
         rendererSettings: props.rendererSettings,
       };
@@ -253,19 +255,13 @@ export default function useLottie(
           }
         }
       },
-      setText: (text: string, path: string[]) => {
-        if (animationRef.current && animationRef.current.isLoaded) {
-          let element = animationRef.current.renderer.elements;
-          path.forEach((pathPart) => {
-            if (element[pathPart]) {
-              element = element[pathPart];
-            }
+      setText: (text: string, path: (string|number)[]) => {
+        // TODO: Consider validating the second condition.
+        // It is not working for lottie_worker since isLoaded does not exist.
+        if (animationRef.current /* && animationRef.current.isLoaded */) {
+          animationRef.current.updateDocumentData(path, {
+            t: text,
           });
-          try {
-            element.updateDocumentData({ t: text });
-          } catch (err) {
-
-          }
         }
       },
       loadAnimation: (newSettings: LottieSettings) => updateSettings(newSettings),
