@@ -11,6 +11,7 @@ import styles from '~/styles/login.css';
 import { getUser, loginUser } from '~/utils/user.server';
 import { i18n } from '~/i18n.server';
 import { useTranslation } from 'react-i18next';
+import useLottie from '~/utils/hooks/useLottie';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -67,39 +68,61 @@ function Login() {
   const transition = useTransition();
   console.log('transition', transition);
 
+  const isTransitioning = true;
+
+  const [lottieElement, lottieControls] = useLottie(
+    {
+      path: '/routed/assets/forms/login.json',
+      autoplay: false,
+      loop: false,
+    },
+    {
+      className: `form-anim ${isTransitioning ? '' : 'form-anim--hidden'}`,
+    },
+  );
+
   return (
     <div className="wrapper">
       <div className="content">
         <div className="form-container">
-          <Form
-            className="form"
-            method="post"
-          >
-            <input
-              type="text"
-              name="email"
-              placeholder={t('email_placeholder')}
-              className="text-input"
-              autoComplete="email"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder={t('password_placeholder')}
-              className="text-input"
-              autoComplete="password"
-            />
-            <button type="submit" className="submit">{t('submit_button')}</button>
-            { data.error
-              && (
-                <div>{data.error}</div>
-              )}
-          </Form>
+          {lottieElement}
+          <div className="form-elements">
+            <Form
+              className="form"
+              method="post"
+            >
+              <input
+                type="text"
+                name="email"
+                placeholder={t('email_placeholder')}
+                className="text-input"
+                id="email-input"
+                autoComplete="email"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder={t('password_placeholder')}
+                className="text-input"
+                id="password-input"
+                autoComplete="password"
+              />
+              <button type="submit" className="submit">{t('submit_button')}</button>
+              { data.error
+                && (
+                  <div>{data.error}</div>
+                )}
+            </Form>
+            <div className="separator">
+              <span className="separator-line" />
+              <span className="separator-text">{t('or_text')}</span>
+              <span className="separator-line" />
+
+            </div>
+            <Link to="/signup" className="link" id="signup-link">{t('signup_button')}</Link>
+            <Link to={`/selection/${ChapterType.character}`} className="link" id="story-link">{t('go_to_stories_button')}</Link>
+          </div>
         </div>
-        <span className="or">{t('or_text')}</span>
-        <Link to="/signup" className="link">{t('signup_button')}</Link>
-        <span className="or">{t('or_text')}</span>
-        <Link to={`/selection/${ChapterType.character}`} className="link">{t('go_to_stories_button')}</Link>
       </div>
     </div>
   );
