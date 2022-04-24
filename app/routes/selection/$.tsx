@@ -24,6 +24,7 @@ import {
   getStories, getUserStoryForChapterFromRequest, SelectionStory,
 } from '../../helpers/story';
 import { getSelectionSubTitleByChapter, getSelectionTitleByChapter } from '../../helpers/textData';
+import { ANONYMOUS_ID } from '~/helpers/constants/user';
 
 const getChapterFromRequest = (request: Request): ChapterStrings => {
   const urlData = new URL(request.url);
@@ -125,7 +126,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
   if (body.toStory) {
     const user = await getUser(request);
-    if (user) {
+    if (user && user.id !== ANONYMOUS_ID) {
       user.games += 1;
       await updateUser(user);
     } else {
