@@ -298,7 +298,6 @@ function View() {
             path="/routed/assets/selection/read_button_3.json"
             ariaLabel={t('story_button_aria')}
             segment={tellStorySegment as AnimationSegment}
-            canChangeDirection={false}
           />
         </footer>
       </article>

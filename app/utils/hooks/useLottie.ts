@@ -174,7 +174,7 @@ export default function useLottie(
     if (currentContainer && config) {
       animationRef.current = Lottie.loadAnimation(config);
       setCurrentAnimation(animationRef.current);
-      addListenersToAnimation(animationRef.current, eventListenersRef.current);
+      addListenersToAnimation(animationRef.current!, eventListenersRef.current);
     }
     return () => {
       if (animationRef.current) {

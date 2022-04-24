@@ -9,11 +9,10 @@ export interface ChapterButtonProps {
   name?: string
   ariaLabel: string
   segment?: LottieSegmentTypes
-  canChangeDirection: boolean
 }
 
 function SubmitButton({
-  value, path, isSelected, id, name = 'redirect', ariaLabel, segment, canChangeDirection,
+  value, path, isSelected, id, name = 'redirect', ariaLabel, segment,
 }: ChapterButtonProps) {
   const [localSegment, setLocalSegment] = useState(segment);
 
@@ -35,12 +34,11 @@ function SubmitButton({
       lottieControls.playSegments(localSegment, true);
     }
   }, [lottieControls, localSegment]);
-
   useEffect(() => {
-    if (lottieControls && canChangeDirection) {
+    if (lottieControls) {
       lottieControls.setDirection(isSelected ? 1 : -1);
     }
-  }, [isSelected, lottieControls, canChangeDirection]);
+  }, [isSelected, lottieControls]);
   return (
     <button
       key={id}
