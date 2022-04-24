@@ -73,8 +73,8 @@ function Login() {
   const [lottieElement, lottieControls] = useLottie(
     {
       path: '/routed/assets/forms/login.json',
-      autoplay: false,
-      loop: false,
+      autoplay: true,
+      loop: true,
     },
     {
       className: `form-anim ${isTransitioning ? '' : 'form-anim--hidden'}`,
@@ -108,19 +108,20 @@ function Login() {
                 autoComplete="password"
               />
               <button type="submit" className="submit">{t('submit_button')}</button>
-              { data.error
-                && (
-                  <div>{data.error}</div>
-                )}
             </Form>
             <div className="separator">
               <span className="separator-line" />
               <span className="separator-text">{t('or_text')}</span>
               <span className="separator-line" />
-
             </div>
-            <Link to="/signup" className="link" id="signup-link">{t('signup_button')}</Link>
-            <Link to={`/selection/${ChapterType.character}`} className="link" id="story-link">{t('go_to_stories_button')}</Link>
+            <div className="links">
+              <Link to="/signup" className="link" id="signup-link">{t('signup_button')}</Link>
+              <Link to={`/selection/${ChapterType.character}`} className="link" id="story-link">{t('go_to_stories_button')}</Link>
+            </div>
+            { data.error
+              && (
+                <div>{data.error}</div>
+              )}
           </div>
         </div>
       </div>
