@@ -3,7 +3,7 @@ import {
   ActionFunction, json, LoaderFunction, redirect,
 } from '@remix-run/node';
 import {
-  Form, Link, useLoaderData, useTransition,
+  Form, Link, useLoaderData, useNavigate, useTransition,
 } from '@remix-run/react';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { commitSession, getSessionFromRequest } from '~/sessions';
@@ -12,6 +12,7 @@ import { getUser, loginUser } from '~/utils/user.server';
 import { i18n } from '~/i18n.server';
 import { useTranslation } from 'react-i18next';
 import useLottie from '~/utils/hooks/useLottie';
+import { useCallback, useEffect, useState } from 'react';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -40,10 +41,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (user.id !== ANONYMOUS_ID && !url.searchParams.get('status')) {
     return redirect(`/selection/${ChapterType.character}`);
   }
+  const loginComplete = url.searchParams.get('status') === 'success';
   return json(
     {
       error: session.get('error'),
       i18n: await i18n.getTranslations(request, ['index']),
+      loginComplete,
     },
     {
       headers: {
@@ -63,23 +66,57 @@ export function links() {
 }
 
 function Login() {
-  const data = useLoaderData();
+  const { error, loginComplete } = useLoaderData();
   const { t } = useTranslation('index');
+  const navigate = useNavigate();
   const transition = useTransition();
-  console.log('transition', transition);
+  const [isAnimationComplete, setAnimationComplete] = useState(false);
+  const [isAnimationLoaded, setAnimationLoaded] = useState(false);
 
-  const isTransitioning = true;
+  // This condition is true when signup is complete or is being submitted
+  const isTransitioning = loginComplete || transition.state === 'loading' || transition.state === 'submitting';
+
+  // Sets the animation complete flag to true when animation is finished
+  const onAnimationComplete = useCallback(() => {
+    setAnimationComplete(true);
+  }, [setAnimationComplete]);
 
   const [lottieElement, lottieControls] = useLottie(
     {
       path: '/routed/assets/forms/login.json',
-      autoplay: true,
-      loop: true,
+      autoplay: false,
+      loop: false,
     },
     {
-      className: `form-anim ${isTransitioning ? '' : 'form-anim--hidden'}`,
+      className: 'form-anim',
     },
   );
+
+  if (lottieControls) {
+    lottieControls.onComplete = onAnimationComplete;
+    lottieControls.onLoad = () => { setAnimationLoaded(true); };
+  }
+
+  // When form is submitted and animation complete, navigate to stories
+  useEffect(() => {
+    if (isAnimationComplete && loginComplete) {
+      navigate('/selection/character');
+    }
+  }, [isAnimationComplete, loginComplete, navigate]);
+
+  // Sets the state of the animation.
+  // - If it is being submitted, the animation plays from the beginning.
+  // = If it is not submitted or it failed, animation stops.
+  useEffect(() => {
+    if (lottieControls && isAnimationLoaded) {
+      if (isTransitioning) {
+        lottieControls.goToAndPlay(0);
+      } else {
+        lottieControls.goToAndStop(0);
+        setAnimationComplete(false);
+      }
+    }
+  }, [isTransitioning, setAnimationComplete, lottieControls, isAnimationLoaded]);
 
   return (
     <div className="wrapper">
@@ -118,9 +155,9 @@ function Login() {
               <Link to="/signup" className="link" id="signup-link">{t('signup_button')}</Link>
               <Link to={`/selection/${ChapterType.character}`} className="link" id="story-link">{t('go_to_stories_button')}</Link>
             </div>
-            { data.error
+            { error
               && (
-                <div>{data.error}</div>
+                <div>{error}</div>
               )}
           </div>
         </div>

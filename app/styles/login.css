@@ -4,9 +4,9 @@
   width: 100%;
   height: 100%;
   background-color: var(--color-1);
-  --input-1-y: 320px;
   --size-multiplier: 1;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .content {
