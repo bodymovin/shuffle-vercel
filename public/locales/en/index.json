@@ -12,6 +12,8 @@
   "menu_site_speed_fast": "Fast",
   "menu_site_speed_fast_aria": "Change site to fast speed",
   "menu_login": "Login",
+  "forgot_password": "Forgot password",
+  "reset_password": "Reset password",
   "menu_logout": "Logout",
   "menu_back_aria": "Go back to build your story",
   "login_button": "Login",
@@ -20,7 +22,7 @@
   "email_placeholder": "Email",
   "password_placeholder": "Password",
   "name_placeholder": "Name",
-  "repeat_password_placeholder": "Repeat your password",
+  "repeat_password_placeholder": "Confir your password",
   "or_text": "Or",
   "signup_button": "Sign up",
   "error_email_registered": "Email already registered",
@@ -28,5 +30,11 @@
   "error_passwords_mismatch": "Passwords don't match",
   "error_wrong_email_pass": "Wrong email or password",
   "error_user_registered": "User is already registered. Try logging in.",
-  "error_generic_message": "Something went wrong."
+  "error_generic_message": "Something went wrong.",
+  "forgot_password_title": "Enter your email.",
+  "forgot_password_sent_message": "Check you email. If your email is registered you will get a reset link. The process might take a couple of minutes.",
+  "reset_password_title": "Enter your password",
+  "reset_password_success_message": "Your password has been successfully reset.",
+  "reset_password_error_message": "There has been an error. Try again or login.",
+  "reset_password_unhandled_message": "There has been an error. Try resetting your password again or login."
 }

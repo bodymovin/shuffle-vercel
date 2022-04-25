@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ActionFunction, LoaderFunction, redirect, json, LinkDescriptor,
+  ActionFunction, LoaderFunction, redirect, json, LinkDescriptor, HeadersInit,
 } from '@remix-run/node';
 import {
   useLoaderData, Form,
@@ -18,13 +18,13 @@ import { useTranslation } from 'react-i18next';
 import { i18n } from '~/i18n.server';
 import { getSelectedChapterPaths, getSelectedStories } from '~/utils/stories.server';
 import { AnimationSegment } from 'lottie-web';
+import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
 import {
   getStories, getUserStoryForChapterFromRequest, SelectionStory,
 } from '../../helpers/story';
 import { getSelectionSubTitleByChapter, getSelectionTitleByChapter } from '../../helpers/textData';
-import { ANONYMOUS_ID } from '~/helpers/constants/user';
 
 const getChapterFromRequest = (request: Request): ChapterStrings => {
   const urlData = new URL(request.url);
@@ -117,7 +117,6 @@ export const handle = {
 
 export const action: ActionFunction = async ({ request }) => {
   const body: any = await bodyParser.toJSON(request);
-  // eslint-disable-next-line no-undef
   const headers: HeadersInit = {};
   const userPrefs: UserPrefs = await getUserPrefsFromRequest(request);
   if (body.story) {

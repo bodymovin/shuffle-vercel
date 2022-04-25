@@ -88,3 +88,21 @@ export const getUser = async (request: Request): Promise<User> => {
 export const loginUser = async (request: Request, redirect: string = '/login?status=success'): Promise<any> => authenticator.authenticate('sb', request, {
   successRedirect: redirect,
 });
+
+export const resetPasswordForEmail = async (email: string, origin: string): Promise<boolean> => {
+  // Ignoring the error to prevent leaking information
+  await supabaseClient.auth.api.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/reset-password`,
+  });
+  return true;
+};
+
+export const updateUserPassword = async (
+  password: string,
+  accessToken: string,
+): Promise<boolean> => {
+  const { error } = await supabaseClient.auth.api.updateUser(accessToken, {
+    password,
+  });
+  return !error;
+};

@@ -1,0 +1,4 @@
+.wrapper {
+  width: 400px;
+  margin: calc(var(--grid-unit) * 10) auto 0 auto;
+}
