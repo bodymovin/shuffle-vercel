@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ChapterStrings, ChapterNavigation } from '~/interfaces/chapters';
-import useLottie, { LottieSegmentTypes } from '~/utils/hooks/useLottie';
+import { LottieSegmentTypes } from '~/utils/hooks/useLottie';
+import useShuffleLottie, { PreferredStaticFrame } from '~/utils/hooks/useShuffleLottie';
 
 export interface ChapterButtonProps {
   path: string
@@ -12,7 +13,7 @@ const segment: LottieSegmentTypes = [0, 25];
 
 function ChapterButton({ chapter, currentChapter, path }: ChapterButtonProps) {
   const isSelected = currentChapter === chapter.id;
-  const [lottieElement, lottieControls] = useLottie(
+  const [lottieElement, lottieControls] = useShuffleLottie(
     {
       loop: false,
       autoplay: false,
@@ -22,6 +23,9 @@ function ChapterButton({ chapter, currentChapter, path }: ChapterButtonProps) {
     },
     {
       className: 'footer__chapter-button__animation',
+    },
+    {
+      preferredStaticFrame: isSelected ? PreferredStaticFrame.LAST : PreferredStaticFrame.FIRST,
     },
   );
 

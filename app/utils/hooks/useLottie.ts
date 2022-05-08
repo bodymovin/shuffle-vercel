@@ -59,6 +59,7 @@ export type LottieControls = {
   goToAndPlay: (val: number, isFrame?: boolean) => void;
   goToAndStop: (val: number, isFrame?: boolean) => void;
   addEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => void;
+  removeEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => void;
   replay: () => void;
   setSpeed: (num: number) => void;
   setDirection: (direction: PlayDirection) => void;
@@ -73,6 +74,12 @@ type LottieConfigType =
   AnimationConfigWithPath<RendererType> | AnimationConfigWithData<RendererType> | null
 
 export type ElOrPropsType = HTMLAttributes<any> | ReactElement<HTMLAttributes<any>> | null
+
+export type UseLottieReturnType = [
+  ReactElement,
+  LottieControls | null,
+  AnimationItem | null,
+]
 
 function buildConfig(
   props: LottieSettings | null,
@@ -142,11 +149,7 @@ function addListenersToAnimation(animation: AnimationItem, listeners: LottieEven
 export default function useLottie(
   lottieSettings: LottieSettings,
   elOrProps: ElOrPropsType = null,
-): [
-  ReactElement,
-  LottieControls | null,
-  AnimationItem | null,
-] {
+): UseLottieReturnType {
   const [settings, setSettings] = useState<LottieSettings | null>(null);
   const [currentContainer, setCurrentContainer] = useState<HTMLElement | null>(null);
   const [currentAnimation, setCurrentAnimation] = useState<AnimationItem | null>(null);
@@ -268,6 +271,11 @@ export default function useLottie(
       addEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => {
         if (animationRef.current) {
           animationRef.current.addEventListener(eventName, callback);
+        }
+      },
+      removeEventListener: (eventName: AnimationEventName, callback: AnimationEventCallback) => {
+        if (animationRef.current) {
+          animationRef.current.removeEventListener(eventName, callback);
         }
       },
       set onComplete(callback: () => void) {

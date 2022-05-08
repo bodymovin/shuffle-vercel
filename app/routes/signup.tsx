@@ -13,7 +13,7 @@ import { i18n } from '~/i18n.server';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
 import { createUser, getSession, loginUser } from '~/utils/user.server';
-import useLottie from '~/utils/hooks/useLottie';
+import useShuffleLottie from '~/utils/hooks/useShuffleLottie';
 
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = request.clone();
@@ -105,7 +105,7 @@ function SignUp() {
     setAnimationComplete(true);
   }, [setAnimationComplete]);
 
-  const [lottieElement, lottieControls] = useLottie(
+  const [lottieElement, lottieControls] = useShuffleLottie(
     {
       path: '/routed/assets/forms/signup2.json',
       autoplay: false,

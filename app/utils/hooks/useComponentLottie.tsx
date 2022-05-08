@@ -1,12 +1,9 @@
-import { AnimationItem } from 'lottie-web';
 import {
-  ReactElement,
   useCallback, useEffect, useRef, useState,
 } from 'react';
 import InlineSVG from '~/components/InlineSVG';
-import { Speeds } from '~/interfaces/speeds';
-import { useSpeed } from '../providers/speed-provider';
-import useLottie, { LottieControls, LottieSettings } from './useLottie';
+import { LottieSettings, UseLottieReturnType } from './useLottie';
+import useShuffleLottie from './useShuffleLottie';
 
 type ComponentLottieSettings = LottieSettings & {
   poster?: string,
@@ -17,28 +14,9 @@ type CurrentEventListeners = {
   DOMLoaded?: () => void | null
 }
 
-type SpeedToData = {
-  // eslint-disable-next-line no-unused-vars
-  [key in Speeds]: number;
-};
-
-const calculateSpeed = (speed: Speeds) => {
-  const speeds:SpeedToData = {
-    slow: 0.33,
-    medium: 1,
-    fast: 3,
-    static: 999999999,
-  };
-  return speeds[speed] || speeds.medium;
-};
-
 export default function useComponentLottie(
   settings: ComponentLottieSettings,
-): [
-  ReactElement /* TODO: look into this type */,
-  LottieControls,
-  AnimationItem | null,
-] {
+): UseLottieReturnType {
   const [isLoaded, setLoaded] = useState(false);
   const currentEventListeners = useRef<CurrentEventListeners>({});
   const { className } = settings;
@@ -47,8 +25,7 @@ export default function useComponentLottie(
       className={`lottie-animation ${isLoaded ? '' : 'lottie-animation--hidden'}`}
     />
   );
-  const [container, controls, animation] = useLottie(settings, lottieContainer);
-  const speed = useSpeed();
+  const [container, controls, animation] = useShuffleLottie(settings, lottieContainer);
 
   const onAnimationLoaded = useCallback(() => {
     setLoaded(true);
@@ -67,12 +44,6 @@ export default function useComponentLottie(
       }
     }
   }, [animation, onAnimationLoaded]);
-
-  useEffect(() => {
-    if (controls) {
-      controls.setSpeed(calculateSpeed(speed));
-    }
-  }, [speed, controls]);
 
   useEffect(() => {
     if (!settings.path && !settings.animationString && isLoaded) {

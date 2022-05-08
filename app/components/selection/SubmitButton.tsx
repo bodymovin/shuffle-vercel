@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import useLottie, { LottieSegmentTypes } from '~/utils/hooks/useLottie';
+import { LottieSegmentTypes } from '~/utils/hooks/useLottie';
+import useShuffleLottie from '~/utils/hooks/useShuffleLottie';
 
 export interface ChapterButtonProps {
   path: string
@@ -16,7 +17,7 @@ function SubmitButton({
 }: ChapterButtonProps) {
   const [localSegment, setLocalSegment] = useState(segment);
 
-  const [lottieElement, lottieControls] = useLottie(
+  const [lottieElement, lottieControls] = useShuffleLottie(
     {
       loop: false,
       autoplay: true,
