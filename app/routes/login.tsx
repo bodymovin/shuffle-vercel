@@ -11,8 +11,10 @@ import styles from '~/styles/login.css';
 import { getUser, loginUser } from '~/utils/user.server';
 import { i18n } from '~/i18n.server';
 import { useTranslation } from 'react-i18next';
-import useLottie from '~/utils/hooks/useLottie';
-import { useCallback, useEffect, useState } from 'react';
+import useShuffleLottie from '~/utils/hooks/useShuffleLottie';
+import {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -36,6 +38,8 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   //
   const session = await getSessionFromRequest(request);
+  // Uncomment for testing purposes
+  // await new Promise((resolve) => { setTimeout(resolve, 2000); });
   const url = new URL(request.url);
   const user = await getUser(request);
   if (user.id !== ANONYMOUS_ID && !url.searchParams.get('status')) {
@@ -72,6 +76,7 @@ function Login() {
   const transition = useTransition();
   const [isAnimationComplete, setAnimationComplete] = useState(false);
   const [isAnimationLoaded, setAnimationLoaded] = useState(false);
+  const passwordRef = useRef<HTMLInputElement|null>(null);
 
   // This condition is true when signup is complete or is being submitted
   const isTransitioning = loginComplete || transition.state === 'loading' || transition.state === 'submitting';
@@ -81,20 +86,33 @@ function Login() {
     setAnimationComplete(true);
   }, [setAnimationComplete]);
 
-  const [lottieElement, lottieControls] = useLottie(
+  const [lottieElement] = useShuffleLottie(
     {
-      path: '/routed/assets/forms/login.json',
-      autoplay: false,
-      loop: false,
+      path: '/routed/assets/forms/login2.json',
+      autoplay: true,
+      loop: true,
     },
     {
       className: 'form-anim',
     },
   );
 
-  if (lottieControls) {
-    lottieControls.onComplete = onAnimationComplete;
-    lottieControls.onLoad = () => { setAnimationLoaded(true); };
+  const [lottieElementOutro, lottieControlsOutro] = useShuffleLottie(
+    {
+      path: '/routed/assets/forms/login_outro.json',
+      autoplay: false,
+      loop: false,
+    },
+    {
+    },
+  );
+
+  if (lottieControlsOutro) {
+    lottieControlsOutro.onComplete = onAnimationComplete;
+    lottieControlsOutro.onLoad = () => {
+      setAnimationLoaded(true);
+      lottieControlsOutro.setText('', [0]);
+    };
   }
 
   // When form is submitted and animation complete, navigate to stories
@@ -108,21 +126,34 @@ function Login() {
   // - If it is being submitted, the animation plays from the beginning.
   // = If it is not submitted or it failed, animation stops.
   useEffect(() => {
-    if (lottieControls && isAnimationLoaded) {
+    if (lottieControlsOutro && isAnimationLoaded) {
       if (isTransitioning) {
-        lottieControls.goToAndPlay(0);
+        const text = passwordRef.current
+          ? Array.from({ length: passwordRef.current.value.length }, () => '•').join('')
+          : '';
+        lottieControlsOutro.setText(text, [0]);
+        lottieControlsOutro.goToAndPlay(0);
       } else {
-        lottieControls.goToAndStop(0);
+        lottieControlsOutro.goToAndPlay(0);
+        lottieControlsOutro.setText('', [0]);
         setAnimationComplete(false);
       }
     }
-  }, [isTransitioning, setAnimationComplete, lottieControls, isAnimationLoaded]);
+  }, [isTransitioning, setAnimationComplete, lottieControlsOutro, isAnimationLoaded]);
 
   return (
     <div className="wrapper">
       <div className="content">
         <div className="form-container">
           {lottieElement}
+          <div
+            className="form-anim"
+            style={{
+              opacity: isTransitioning ? 1 : 0,
+            }}
+          >
+            {lottieElementOutro}
+          </div>
           <div className="form-elements">
             <Form
               className="form"
@@ -139,10 +170,14 @@ function Login() {
               <input
                 type="password"
                 name="password"
+                ref={passwordRef}
                 placeholder={t('password_placeholder')}
                 className="text-input"
                 id="password-input"
                 autoComplete="password"
+                style={{
+                  opacity: isTransitioning ? 0 : 1,
+                }}
               />
               <button type="submit" className="submit">{t('submit_button')}</button>
             </Form>

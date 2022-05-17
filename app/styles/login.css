@@ -22,7 +22,8 @@
   width: 100%;
   display: grid;
   grid-template-areas: "all";
-  border: 1px solid red;
+  outline: 1px solid red;
+  outline-offset: -1px;
 }
 
 .form-elements {
@@ -40,8 +41,10 @@
 
 .form-anim {
   width: 100%;
+  height: 100%;
   grid-area: all;
   pointer-events: none;
+  line-height: 0;
 }
 
 .form-anim--hidden {
@@ -54,7 +57,7 @@
 }
 
 .links {
-  margin: calc(var(--grid-unit) * 14 * var(--size-multiplier)) auto 0 auto;
+  margin: calc(var(--grid-unit) * 15 * var(--size-multiplier)) auto 0 auto;
   display: flex;
   gap: calc(var(--grid-unit) * 8 * var(--size-multiplier));
   justify-content: center;
@@ -88,7 +91,7 @@ input.text-input {
 }
 
 .submit {
-  margin: calc(var(--grid-unit) * 17 * var(--size-multiplier)) auto 0 auto;
+  margin: calc(var(--grid-unit) * 16 * var(--size-multiplier)) auto 0 auto;
   width: calc(var(--grid-unit) * 36 * var(--size-multiplier));
   height: calc(var(--grid-unit) * 10 * var(--size-multiplier));
   border-radius: calc(var(--grid-unit) * 1 * var(--size-multiplier));

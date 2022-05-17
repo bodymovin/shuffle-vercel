@@ -48,17 +48,17 @@ figure {
   margin: 0;
 }
 
-path.anim-color-1, rect.anim-color-1, .anim-color-1 path {
+path.anim-color-1, rect.anim-color-1, .anim-color-1 path, .anim-color-1 text {
   fill: var(--color-1);
   stroke: var(--color-1);
 }
 
-path.anim-color-2, rect.anim-color-2, .anim-color-2 path {
+path.anim-color-2, rect.anim-color-2, .anim-color-2 path, .anim-color-2 text {
   fill: var(--color-2);
   stroke: var(--color-2);
 }
 
-path.anim-color-3, rect.anim-color-3, .anim-color-3 path {
+path.anim-color-3, rect.anim-color-3, .anim-color-3 path, .anim-color-3 text {
   fill: var(--color-3);
   stroke: var(--color-3);
 }
