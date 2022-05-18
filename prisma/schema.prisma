@@ -45,6 +45,7 @@ model Profile {
   id      String @unique
   name    String @default("")
   games   Int @default(0)
+  stripe_customer   String @default("")
 }
 
 enum ChapterType {
