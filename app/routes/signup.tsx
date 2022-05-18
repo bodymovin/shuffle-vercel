@@ -12,10 +12,12 @@ import { getUserPrefsFromRequest, UserPrefs } from '~/cookies';
 import { i18n } from '~/i18n.server';
 import { commitSession, getSessionFromRequest } from '~/sessions';
 import styles from '~/styles/login.css';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { createUser, getSession, loginUser } from '~/utils/user.server';
 import useShuffleLottie from '~/utils/hooks/useShuffleLottie';
 
 export const action: ActionFunction = async ({ request }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const clonedRequest = request.clone();
   await new Promise((res) => {
     setTimeout(res, 0);
@@ -41,7 +43,14 @@ export const action: ActionFunction = async ({ request }) => {
 
     if (newUser) {
       // TODO: check if this is the best way to login the user after signup
-      await loginUser(clonedRequest, '/signup?status=success');
+      // TODO: with email confirmation active, login can't be performed automatically
+      // decide whether to turn email confirmation off or display a message
+      // await loginUser(clonedRequest, '/signup?status=success');
+      return redirect('/signup?status=success', {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
     }
     session.flash('error', errorMessage || t('error_generic_message'));
   }
@@ -145,7 +154,7 @@ function SignUp() {
   const { t } = useTranslation('index');
 
   return (
-    <div className="wrapper">
+    <div className="wrapper" style={{ background: 'white' }}>
       <div className="content">
         <div className="form-container">
           {lottieElement}
