@@ -1,16 +1,35 @@
-import { Profile } from '@prisma/client';
+import { Prisma, Profile } from '@prisma/client';
 import supabaseClient from '~/helpers/supabase/client.server';
 import { getUserPrefsFromRequest } from '~/cookies';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { User, UserSession } from '~/interfaces/user';
 import { UserCredentials } from '@supabase/supabase-js';
+import InitStripe from 'stripe';
 import { db } from './db.server';
 import { authenticator } from './auth.server';
 
-export const getUserProfile = async (id: string): Promise<Profile | null> => {
+const createStripeCustomer = async (email: string): Promise<string> => {
+  try {
+    const stripe = new InitStripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2020-08-27',
+      typescript: true,
+    });
+    const stripeCustomer = await stripe.customers.create({
+      email,
+    });
+    return stripeCustomer.id;
+  } catch (error) {
+    return '';
+  }
+};
+
+export const getUserProfile = async (id: string) => {
   const profile = await db.profile.findUnique({
     where: {
       id,
+    },
+    include: {
+      userStories: true,
     },
   });
   return profile;
@@ -42,10 +61,12 @@ export const createUser = async (
     }
     return null;
   }
+  const stripeCustomerId = await createStripeCustomer(email);
   const user = {
     id: userCredentials.id,
     name,
     games,
+    stripe_customer: stripeCustomerId,
   };
   await updateUser(user);
   return userCredentials;
@@ -61,6 +82,8 @@ export const createAnonymousUserFromRequest = async (request: Request): Promise<
     id: ANONYMOUS_ID,
     name: '',
     games: userPrefs.games || 0,
+    stripe_customer: '',
+    stories: [],
   };
   return user;
 };
@@ -69,15 +92,19 @@ export const getSession = async (
   request: Request,
 ): Promise<UserSession> => authenticator.isAuthenticated(request);
 
+type ProfileWithStories = Prisma.PromiseReturnType<typeof getUserProfile>
+
 export const getUser = async (request: Request): Promise<User> => {
   let user: User | null = null;
   const sbUser = await getSession(request);
   if (sbUser) {
-    const userProfile = await getUserProfile(sbUser.user.id);
+    const userProfile: ProfileWithStories = await getUserProfile(sbUser.user.id);
     user = {
       id: sbUser.user.id,
       games: userProfile?.games || 0,
       name: userProfile?.name || '',
+      stripe_customer: userProfile?.stripe_customer || '',
+      stories: userProfile?.userStories || [],
     };
   } else {
     user = await createAnonymousUserFromRequest(request);
@@ -85,7 +112,10 @@ export const getUser = async (request: Request): Promise<User> => {
   return user;
 };
 
-export const loginUser = async (request: Request, redirect: string = '/login?status=success'): Promise<any> => authenticator.authenticate('sb', request, {
+export const loginUser = async (
+  request: Request,
+  redirect: string = '/login?status=success',
+): Promise<any> => authenticator.authenticate('sb', request, {
   successRedirect: redirect,
 });
 

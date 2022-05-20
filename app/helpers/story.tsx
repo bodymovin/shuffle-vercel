@@ -18,12 +18,16 @@ export const setUserStory = async (data: UserPrefs, request: Request) => (
   updateUserPrefs(request, data)
 );
 
+type PayMode = 'free' | 'expense' | 'games'
+
 export interface SelectionStory {
   id: string
   title: string
   path?: string
   animation?: string
   enabled: boolean
+  payMode: PayMode
+  price: number
 }
 
 export const getStories = async () => {
