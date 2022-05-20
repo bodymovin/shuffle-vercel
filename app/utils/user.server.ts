@@ -1,4 +1,4 @@
-import { Profile } from '@prisma/client';
+import { Prisma, Profile } from '@prisma/client';
 import supabaseClient from '~/helpers/supabase/client.server';
 import { getUserPrefsFromRequest } from '~/cookies';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
@@ -21,12 +21,15 @@ const createStripeCustomer = async (email: string): Promise<string> => {
   } catch (error) {
     return '';
   }
-}
+};
 
-export const getUserProfile = async (id: string): Promise<Profile | null> => {
+export const getUserProfile = async (id: string) => {
   const profile = await db.profile.findUnique({
     where: {
       id,
+    },
+    include: {
+      userStories: true,
     },
   });
   return profile;
@@ -79,6 +82,8 @@ export const createAnonymousUserFromRequest = async (request: Request): Promise<
     id: ANONYMOUS_ID,
     name: '',
     games: userPrefs.games || 0,
+    stripe_customer: '',
+    stories: [],
   };
   return user;
 };
@@ -87,15 +92,19 @@ export const getSession = async (
   request: Request,
 ): Promise<UserSession> => authenticator.isAuthenticated(request);
 
+type ProfileWithStories = Prisma.PromiseReturnType<typeof getUserProfile>
+
 export const getUser = async (request: Request): Promise<User> => {
   let user: User | null = null;
   const sbUser = await getSession(request);
   if (sbUser) {
-    const userProfile = await getUserProfile(sbUser.user.id);
+    const userProfile: ProfileWithStories = await getUserProfile(sbUser.user.id);
     user = {
       id: sbUser.user.id,
       games: userProfile?.games || 0,
       name: userProfile?.name || '',
+      stripe_customer: userProfile?.stripe_customer || '',
+      stories: userProfile?.userStories || [],
     };
   } else {
     user = await createAnonymousUserFromRequest(request);

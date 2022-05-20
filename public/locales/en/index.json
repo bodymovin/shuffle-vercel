@@ -22,7 +22,7 @@
   "email_placeholder": "Email",
   "password_placeholder": "Password",
   "name_placeholder": "Name",
-  "repeat_password_placeholder": "Confir your password",
+  "repeat_password_placeholder": "Confirm your password",
   "or_text": "Or",
   "signup_button": "Sign up",
   "error_email_registered": "Email already registered",

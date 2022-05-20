@@ -25,7 +25,7 @@ export const findStories = async (storyIds: string[]): Promise<Story[]> => {
 export const findFirstFreeStory = async (): Promise<Story | null> => {
   const story = await db.story.findFirst({
     where: {
-      free: true,
+      payMode: 'free',
     },
     orderBy: [
       {

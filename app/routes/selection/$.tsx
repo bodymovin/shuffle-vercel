@@ -64,7 +64,9 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
         {
           id: story.id,
           title: story.title,
-          enabled: story.free || (user && user.games >= 3),
+          payMode: story.payMode,
+          price: story.price,
+          enabled: story.payMode === 'free' || !!(user.stories && user.stories.find((userStory) => userStory.storyId === story.id)),
           path: selectedStoryId === story.id ? '' : (await getSelectionChapterPathForStory(story.path, chapter)),
           animation: selectedStoryId === story.id ? JSON.stringify(await getSelectionChapterAnimationForStory(story.path, chapter)) : '',
         }
@@ -127,7 +129,8 @@ export const action: ActionFunction = async ({ request }) => {
     const user = await getUser(request);
     if (user && user.id !== ANONYMOUS_ID) {
       user.games += 1;
-      await updateUser(user);
+      const { stories, ...saveUser } = user;
+      await updateUser(saveUser);
     } else {
       userPrefs.games = userPrefs.games ? userPrefs.games + 1 : 1;
     }

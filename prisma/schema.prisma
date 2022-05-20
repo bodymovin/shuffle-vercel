@@ -16,8 +16,9 @@ model Story {
   title     String @db.VarChar(255)
   path      String @db.VarChar(255) @unique
   order     Float @default(0)
-  free      Boolean
-  chapters   Chapter[]
+  price     Float @default(0)
+  payMode   PayMode
+  chapters  Chapter[]
 }
 
 // For now there is no use for chapters.
@@ -46,6 +47,16 @@ model Profile {
   name    String @default("")
   games   Int @default(0)
   stripe_customer   String @default("")
+  userStories UserStory[]
+}
+
+model UserStory {
+  id       String         @id @default(uuid())
+  user     Profile            @relation(fields: [userId], references: [id])
+  userId   String
+  storyId  String
+  @@index([userId])
+  @@unique([userId, storyId], name: "userStory")
 }
 
 enum ChapterType {
@@ -57,4 +68,12 @@ enum ChapterType {
   destination  @map("destination")
 
   @@map("_ChapterType")
+}
+
+enum PayMode {
+  free    @map("free")
+  games    @map("games")
+  paid @map("paid")
+
+  @@map("_PayMode")
 }
