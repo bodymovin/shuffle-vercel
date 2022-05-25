@@ -4,16 +4,12 @@ import { getUserPrefsFromRequest } from '~/cookies';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import { User, UserSession } from '~/interfaces/user';
 import { UserCredentials } from '@supabase/supabase-js';
-import InitStripe from 'stripe';
+import stripe from '~/helpers/stripe/stripe';
 import { db } from './db.server';
 import { authenticator } from './auth.server';
 
 const createStripeCustomer = async (email: string): Promise<string> => {
   try {
-    const stripe = new InitStripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2020-08-27',
-      typescript: true,
-    });
     const stripeCustomer = await stripe.customers.create({
       email,
     });

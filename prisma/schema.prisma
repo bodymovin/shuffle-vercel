@@ -48,15 +48,27 @@ model Profile {
   games   Int @default(0)
   stripe_customer   String @default("")
   userStories UserStory[]
+  userProducts Cart[]
 }
 
 model UserStory {
   id       String         @id @default(uuid())
-  user     Profile            @relation(fields: [userId], references: [id])
+  user     Profile        @relation(fields: [userId], references: [id])
   userId   String
   storyId  String
   @@index([userId])
   @@unique([userId, storyId], name: "userStory")
+}
+
+model Cart {
+  id       String         @id @default(uuid())
+  createdAt DateTime     @default(now())
+  userId      String
+  productId  String
+  productType  ProductType
+  user        Profile        @relation(fields: [userId], references: [id])
+  @@index([userId])
+  @@unique([userId, productId, productType], name: "userProduct")
 }
 
 enum ChapterType {
@@ -76,4 +88,11 @@ enum PayMode {
   paid @map("paid")
 
   @@map("_PayMode")
+}
+
+
+enum ProductType {
+  story    @map("story")
+  bundle    @map("bundle")
+  @@map("_ProductType")
 }
