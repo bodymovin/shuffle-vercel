@@ -3,10 +3,10 @@ import path from 'path';
 
 // You will need to provide a backend to load your translations, here we use the
 // file system one and tell it where to find the translations.
-
+// /var/task/output/server/pages/api
 const localesPath = process.env.NODE_ENV === 'development' 
   ? './public/locales' // this is the local path
-  : './output/server/pages/public/locales'; // this is the vercel path, found with trial and error
+  : `${__dirname}/../public/locales`; // this is the vercel path, found with trial and error
 
 const backend = new FileSystemBackend(path.resolve(localesPath));
 
