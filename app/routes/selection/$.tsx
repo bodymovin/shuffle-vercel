@@ -48,7 +48,6 @@ export interface SelectionUserData {
   stories: SelectionStory[]
   user: User,
   selectedAnimationPaths: ChapterToContent
-  dir: string
 }
 
 export const loader: LoaderFunction = async ({ request }):Promise<any> => {
@@ -87,7 +86,6 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
       stories: selectionStories,
       user,
       selectedAnimationPaths,
-      dir: __dirname,
     },
     {
       headers: {
@@ -198,7 +196,6 @@ function View() {
     selectedStoryId,
     stories,
     user,
-    dir,
   } = useLoaderData<SelectionUserData>();
   const [currentStoryId, setStoryId] = useState(selectedStoryId);
   const [isFirst, setIsFirst] = useState(true);
@@ -307,10 +304,6 @@ function View() {
           />
         </footer>
       </article>
-      <div style={{ position: 'absolute', top: 0, left: 0 }}>
-        DIR:
-        {dir}
-      </div>
     </Form>
   );
 }
