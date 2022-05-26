@@ -12,7 +12,7 @@ const backend = new FileSystemBackend(path.resolve(localesPath));
 
 export const i18n = new RemixI18Next(backend, {
   fallbackLng: 'en', // here configure your default (fallback) language
-  supportedLanguages: ['es', 'en'], // here configure your supported languages
+  supportedLanguages: ['en'], // here configure your supported languages
   i18nextOptions: {
 
   }
