@@ -65,10 +65,28 @@ model Cart {
   createdAt DateTime     @default(now())
   userId      String
   productId  String
-  productType  ProductType
+  status    PurchaseStatus
   user        Profile        @relation(fields: [userId], references: [id])
   @@index([userId])
-  @@unique([userId, productId, productType], name: "userProduct")
+  @@unique([userId, productId], name: "userProduct")
+}
+
+model Product {
+  id       String         @id @default(uuid())
+  createdAt DateTime     @default(now())
+  itemId      String
+  itemType  ProductType
+  priceId String
+}
+
+model Purchase {
+  id       String         @id @default(uuid())
+  createdAt DateTime     @default(now())
+  userId    String
+  intentId  String
+  cartItems String
+  status  PurchaseStatus
+  @@index([intentId])
 }
 
 enum ChapterType {
@@ -95,4 +113,12 @@ enum ProductType {
   story    @map("story")
   bundle    @map("bundle")
   @@map("_ProductType")
+}
+
+enum PurchaseStatus {
+  pending    @map("pending")
+  processing    @map("processing")
+  cancelled    @map("cancelled")
+  complete    @map("complete")
+  @@map("_PurchaseStatus")
 }
