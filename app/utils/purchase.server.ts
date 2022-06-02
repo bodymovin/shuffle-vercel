@@ -1,19 +1,30 @@
 import { getCartItemById, updateCartItem } from './cart.server';
 import { db } from './db.server';
 import { getProductById } from './product.server';
+import * as userStory from './user-story.server';
 
-type PurchaseStatus = 'pending' | 'cancelled' | 'complete'
+type PurchaseStatus = 'pending' | 'cancelled' | 'complete' | 'processing'
 
-type PurchaseItem = {
+export type PurchaseItem = {
+  id?: string
   userId: string
   intentId: string
   cartItems: string
   status: PurchaseStatus
 }
 
-export const createPurchase = async (purchase: PurchaseItem): Promise<unknown> => (
+export const createPurchase = async (purchase: PurchaseItem): Promise<PurchaseItem> => (
   db.purchase.create({
     data: purchase,
+  })
+);
+
+export const updatePurchase = async (purchase: PurchaseItem): Promise<unknown> => (
+  db.purchase.update({
+    data: purchase,
+    where: {
+      id: purchase.id,
+    },
   })
 );
 
@@ -22,18 +33,12 @@ const assignCartItemToUser = async (cartItemId: string) => {
   if (cartItem) {
     const product = await getProductById(cartItem.productId);
     if (product) {
-      console.log('assignCartItemToUser::productExists');
       // TODO: handle product type
       const storyId = product.itemId;
       const { userId } = cartItem;
       // TODO: handle unique constraint
-      const userStory = await db.userStory.create({
-        data: {
-          userId,
-          storyId,
-        },
-      });
-      if (userStory) {
+      const userStoryEntity = await userStory.create(userId, storyId);
+      if (userStoryEntity) {
         cartItem.status = 'complete';
         await updateCartItem(cartItem);
       }
@@ -60,3 +65,9 @@ export const resolvePurchaseByIntentId = async (intentId: string) => {
     });
   }
 };
+
+export const getPurchase = async (id: string) => db.purchase.findUnique({
+  where: {
+    id,
+  },
+});
