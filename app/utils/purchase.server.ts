@@ -3,7 +3,7 @@ import { db } from './db.server';
 import { getProductById } from './product.server';
 import * as userStory from './user-story.server';
 
-type PurchaseStatus = 'pending' | 'cancelled' | 'complete' | 'processing'
+type PurchaseStatus = 'pending' | 'cancelled' | 'complete' | 'processing' | 'deleted'
 
 export type PurchaseItem = {
   id?: string

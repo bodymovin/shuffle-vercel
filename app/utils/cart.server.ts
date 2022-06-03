@@ -1,18 +1,31 @@
-import { PurchaseStatus } from '@prisma/client';
+import { Prisma, PurchaseStatus } from '@prisma/client';
 import { db } from './db.server';
 
 export type CartItem = {
+  id?: string
   userId: string
   productId: string
-  id: string
   status: PurchaseStatus
 }
 
-export const getCartByUser = async (userId: string): Promise<CartItem[]> => {
+export const createCartItem = async (cartItem: CartItem): Promise<CartItem> => (
+  db.cart.create({
+    data: cartItem,
+  })
+);
+
+export const getCartByUser = async (
+  userId: string,
+  onlyPending: boolean = false,
+): Promise<CartItem[]> => {
+  const condition: Prisma.CartWhereInput = {
+    userId,
+  };
+  if (onlyPending) {
+    condition.status = 'pending';
+  }
   const cart = await db.cart.findMany({
-    where: {
-      userId,
-    },
+    where: condition,
   });
   return cart;
 };

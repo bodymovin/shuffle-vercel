@@ -1,6 +1,6 @@
 import { withTranslation } from 'react-i18next';
 import InlineSVG from '~/components/InlineSVG';
-import { SelectionStory } from '~/helpers/story';
+import type { SelectionStory } from '~/helpers/story';
 
 const lockIconContent = `
 <?xml version="1.0" encoding="utf-8"?>

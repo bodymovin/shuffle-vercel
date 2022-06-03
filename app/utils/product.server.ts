@@ -1,6 +1,7 @@
 import { db } from './db.server';
 
-type ProductItem = {
+export type ProductItem = {
+  id: string
   itemId: string
   itemType: string
   priceId: string

@@ -26,6 +26,7 @@ export interface SelectionStory {
   path?: string
   animation?: string
   enabled: boolean
+  inCart: boolean
   payMode: PayMode
   price: number
 }
