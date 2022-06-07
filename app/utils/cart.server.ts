@@ -16,13 +16,15 @@ export const createCartItem = async (cartItem: CartItem): Promise<CartItem> => (
 
 export const getCartByUser = async (
   userId: string,
-  onlyPending: boolean = false,
+  statuses: PurchaseStatus[] = [],
 ): Promise<CartItem[]> => {
   const condition: Prisma.CartWhereInput = {
     userId,
   };
-  if (onlyPending) {
-    condition.status = 'pending';
+  if (statuses.length) {
+    condition.status = {
+      in: statuses,
+    };
   }
   const cart = await db.cart.findMany({
     where: condition,

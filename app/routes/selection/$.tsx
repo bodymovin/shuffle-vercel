@@ -24,6 +24,7 @@ import type { AnimationSegment } from 'lottie-web';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
 import type { ProductItem } from '~/utils/product.server';
 import { getProductsByIds } from '~/utils/product.server';
+import type { CartItem } from '~/utils/cart.server';
 import { getCartByUser } from '~/utils/cart.server';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
@@ -57,11 +58,9 @@ export interface SelectionUserData {
   selectedAnimationPaths: ChapterToContent
 }
 
-const getCartProducts = async (user: User): Promise<ProductItem[]> => {
+const getCartProducts = async (user: User, cart: CartItem[]): Promise<ProductItem[]> => {
   // TODO: switch the following when contraints are correctly set on the DB
   // const cart = user.cartItems || [];
-  const cart = await getCartByUser(user.id, true);
-  //
   const cartProductIds = cart.map((cartItem) => cartItem.productId);
   //
   if (!cartProductIds.length) {
@@ -70,10 +69,26 @@ const getCartProducts = async (user: User): Promise<ProductItem[]> => {
   return getProductsByIds(cartProductIds);
 };
 
+const findCart = (
+  storyId: string,
+  cartProducts: ProductItem[],
+  cart: CartItem[],
+): CartItem | null => {
+  if (!cartProducts || !cart) {
+    return null;
+  }
+  const cartProduct = cartProducts.find((product) => product.itemId === storyId);
+  if (!cartProduct) {
+    return null;
+  }
+  return cart.find((cartItem) => cartItem.productId === cartProduct.id) || null;
+};
+
 export const loader: LoaderFunction = async ({ request }):Promise<any> => {
   const session = await getSessionFromRequest(request);
   const user = await getUser(request);
-  const cartProducts = await getCartProducts(user);
+  const cart = await getCartByUser(user.id, ['pending', 'deleted']);
+  const cartProducts = await getCartProducts(user, cart);
   //
   const chapter = getChapterFromRequest(request);
   const stories = await getStories();
@@ -88,7 +103,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
           payMode: story.payMode,
           price: story.price,
           enabled: story.payMode === 'free' || !!(user.stories && user.stories.find((userStory) => userStory.storyId === story.id)),
-          inCart: story.payMode !== 'free' && !!(cartProducts && cartProducts.find((product) => product.itemId === story.id)),
+          cart: story.payMode !== 'free' ? findCart(story.id, cartProducts, cart) : null,
           path: selectedStoryId === story.id ? '' : (await getSelectionChapterPathForStory(story.path, chapter)),
           animation: selectedStoryId === story.id ? JSON.stringify(await getSelectionChapterAnimationForStory(story.path, chapter)) : '',
         }

@@ -1,12 +1,14 @@
-import { LoaderFunction, redirect } from '@remix-run/node';
+import type { LoaderFunction } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import stripe from '~/helpers/stripe/stripe';
-import fs from 'fs/promises';
 import { getUser } from '~/utils/user.server';
-import { CartItem, getCartByUser, updateCartItem } from '~/utils/cart.server';
+import type { CartItem } from '~/utils/cart.server';
+import { getCartByUser, updateCartItem } from '~/utils/cart.server';
 import { getProductsByIds } from '~/utils/product.server';
-import { createPurchase, PurchaseItem, updatePurchase } from '~/utils/purchase.server';
+import type { PurchaseItem } from '~/utils/purchase.server';
+import { createPurchase, updatePurchase } from '~/utils/purchase.server';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
-import { User } from '~/interfaces/user';
+import type { User } from '~/interfaces/user';
 
 const getCheckoutUser = async (request: Request): Promise<User> => {
   const user = await getUser(request);
@@ -47,7 +49,7 @@ const updatePurchaseItem = async (purchaseItem: PurchaseItem, intentId: string) 
   } catch (error) {
     throw redirect('/selection/character', 302);
   }
-}
+};
 
 const createStripeSession = async (cartItems: CartItem[], purchase: PurchaseItem) => {
   const productIds = cartItems.map((cartItem) => cartItem.productId);

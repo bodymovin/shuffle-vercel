@@ -1,6 +1,7 @@
 import { useFetcher } from '@remix-run/react';
 import { withTranslation } from 'react-i18next';
 import type { SelectionStory } from '~/helpers/story';
+import type { CartItem } from '~/utils/cart.server';
 
 type GamePaywallProps = {
   story: SelectionStory
@@ -16,20 +17,35 @@ function PaidPaywall(props: GamePaywallProps) {
   const fetcher = useFetcher();
 
   const isInCart = fetcher.state === 'idle'
-    ? story.inCart
-    : fetcher.submission?.formData.get('value') === '1';
+    ? story.cart && story.cart.status !== 'deleted'
+    // TODO: when the cart item doesn't exist, it's probably better to show a spinner
+    : fetcher.submission?.formData.get('status') !== 'deleted';
 
   const submitForm = () => {
     const formData = new FormData();
-    formData.set('id', story.id);
-    formData.set('value', isInCart ? '0' : '1');
-    fetcher.submit(
-      formData,
-      {
-        method: 'post',
-        action: '/cart',
-      },
-    );
+    if (story.cart) {
+      const cart: CartItem = {
+        ...story.cart,
+        status: isInCart ? 'deleted' : 'pending',
+      };
+
+      fetcher.submit(
+        cart,
+        {
+          method: isInCart ? 'delete' : 'put',
+          action: '/cart',
+        },
+      );
+    } else {
+      formData.set('storyId', story.id);
+      fetcher.submit(
+        formData,
+        {
+          method: 'post',
+          action: '/cart',
+        },
+      );
+    }
   };
 
   return (

@@ -1,6 +1,8 @@
-import { Story } from '@prisma/client';
-import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
-import { ChapterStrings } from '~/interfaces/chapters';
+import type { Story } from '@prisma/client';
+import type { UserPrefs } from '~/cookies';
+import { getUserPrefsFromRequest, updateUserPrefs } from '~/cookies';
+import type { ChapterStrings } from '~/interfaces/chapters';
+import type { CartItem } from '~/utils/cart.server';
 import { db } from '~/utils/db.server';
 
 export const getUserStoryForChapterFromRequest = async (
@@ -26,9 +28,9 @@ export interface SelectionStory {
   path?: string
   animation?: string
   enabled: boolean
-  inCart: boolean
   payMode: PayMode
   price: number
+  cart?: CartItem
 }
 
 export const getStories = async () => {

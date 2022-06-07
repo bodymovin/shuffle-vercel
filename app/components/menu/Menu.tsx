@@ -1,6 +1,6 @@
-import { useFetcher, useMatches } from '@remix-run/react';
+import { Link, useFetcher, useMatches } from '@remix-run/react';
 import { useEffect, useState } from 'react';
-import { User } from '~/interfaces/user';
+import type { User } from '~/interfaces/user';
 import LoginForm from './LoginForm';
 import MainMenu from './MainMenu';
 import PalettePicker from './PalettePicker';
@@ -51,6 +51,9 @@ function Menu(props: MenuInterface) {
             <SpeedPicker
               fetcher={fetcher}
             />
+          </li>
+          <li>
+            <Link to="/cart-items">go to Cart</Link>
           </li>
           <li>
             <LoginForm
