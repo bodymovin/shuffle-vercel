@@ -1,5 +1,6 @@
 {
   "story_locked": "you need to play {{key}} more time(s) \r\n to unlock this story",
+  "story_paid_locked": "you need to purchase this story to use it",
   "story_button_aria": "Tell your story",
   "story_previous_story_aria": "Previous story",
   "story_next_story_aria": "Next story",

@@ -12,25 +12,11 @@ function CartItemElement(props: CartItemProps) {
   } = props;
   const toggle = useFetcher();
 
-  /*
-    const isInCart = fetcher.state === 'idle'
-    ? story.cart && story.cart.status !== 'deleted'
-    // TODO: when the cart item doesn't exist, it's probably better to show a spinner
-    : fetcher.submission?.formData.get('status') !== 'deleted';
-  */
-  const isInCart = toggle.state === 'idle'
-    ? cartItem.cart.status !== 'deleted'
-    : toggle.submission?.formData.get('status') !== 'deleted';
-
   const submitForm = () => {
-    const cart: CartItem = {
-      ...cartItem.cart,
-      status: isInCart ? 'deleted' : 'pending',
-    };
     toggle.submit(
-      cart,
+      cartItem.cart, // TODO: look into this
       {
-        method: isInCart ? 'delete' : 'put',
+        method: 'delete',
         action: '/cart',
       },
     );
@@ -44,11 +30,11 @@ function CartItemElement(props: CartItemProps) {
           type="button"
           className="cart-item__button"
           name="submit"
-          value={isInCart ? '0' : '1'}
+          value="0"
           aria-label="submit placeholder"
           onClick={submitForm}
         >
-          {isInCart ? 'Remove from cart' : 'Add to cart'}
+          Remove from cart
         </button>
       </toggle.Form>
     </li>

@@ -48,7 +48,7 @@ model Profile {
   games   Int @default(0)
   stripe_customer   String @default("")
   userStories UserStory[]
-  userProducts Cart[]
+  userCartItems Cart[]
 }
 
 model UserStory {
@@ -63,6 +63,7 @@ model UserStory {
 model Cart {
   id       String         @id @default(uuid())
   createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   userId      String
   productId  String
   status    PurchaseStatus
@@ -120,5 +121,6 @@ enum PurchaseStatus {
   processing    @map("processing")
   cancelled    @map("cancelled")
   complete    @map("complete")
+  deleted    @map("deleted")
   @@map("_PurchaseStatus")
 }

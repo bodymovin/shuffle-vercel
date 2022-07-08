@@ -11,10 +11,6 @@ function ProductItem(props: CartItemProps) {
   } = props;
   const toggle = useFetcher();
 
-  const isInCart = toggle.state === 'idle'
-    ? false
-    : toggle.submission?.formData.get('value') === '1';
-
   const submitForm = () => {
     const formData = new FormData();
     formData.set('storyId', item.story.id);
@@ -31,16 +27,16 @@ function ProductItem(props: CartItemProps) {
     <li>
       <div>{item.story.title}</div>
       <toggle.Form>
-        <input type="hidden" value={isInCart ? '0' : '1'} name="value" />
+        <input type="hidden" value="1" name="value" />
         <button
           type="button"
           className="cart-item__button"
           name="submit"
-          value={isInCart ? '0' : '1'}
+          value="1"
           aria-label="submit placeholder"
           onClick={submitForm}
         >
-          {isInCart ? 'Remove from cart' : 'Add to cart'}
+          Add to cart
         </button>
       </toggle.Form>
     </li>

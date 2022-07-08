@@ -13,6 +13,7 @@ import { getUser } from '~/utils/user.server';
 import styles from '~/styles/cart-items.css';
 import type { User } from '~/interfaces/user';
 import ProductItemComponent from '~/components/cart/ProductItem';
+import notEmpty from '~/helpers/notEmpty';
 
 export function links() {
   return [
@@ -31,14 +32,11 @@ export type CartViewItem = {
 export type ProductViewItem = {
   story: Story
   product: ProductItem
+  cart?: CartItem
 }
 type UserLoaderData = {
   cartItems: CartViewItem[]
   products: ProductViewItem[]
-}
-
-function notEmpty<TValue>(value: TValue | null): value is TValue {
-  return value !== null;
 }
 
 const getUserCartItems = async (user:User): Promise<CartViewItem[]> => {
@@ -57,7 +55,9 @@ const getUserCartItems = async (user:User): Promise<CartViewItem[]> => {
       }
       return null;
     }));
-    cartItems = nullableCartItems.filter(notEmpty);
+    cartItems = nullableCartItems
+      .filter(notEmpty)
+      .filter((cartViewItem) => cartViewItem.cart.status === 'pending');
   }
   return cartItems;
 };
@@ -77,6 +77,7 @@ const filterAvailableProducts = async (
     return {
       story,
       product,
+      cart: cartItems.find((cartViewItem) => cartViewItem.product.id === product.id)?.cart,
     };
   }));
   return productViewItems.filter(notEmpty);
