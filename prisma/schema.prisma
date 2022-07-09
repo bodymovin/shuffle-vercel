@@ -48,15 +48,46 @@ model Profile {
   games   Int @default(0)
   stripe_customer   String @default("")
   userStories UserStory[]
+  userCartItems Cart[]
 }
 
 model UserStory {
   id       String         @id @default(uuid())
-  user     Profile            @relation(fields: [userId], references: [id])
+  user     Profile        @relation(fields: [userId], references: [id])
   userId   String
   storyId  String
   @@index([userId])
   @@unique([userId, storyId], name: "userStory")
+}
+
+model Cart {
+  id       String         @id @default(uuid())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  userId      String
+  productId  String
+  status    PurchaseStatus
+  user        Profile        @relation(fields: [userId], references: [id])
+  @@index([userId])
+  @@unique([userId, productId], name: "userProduct")
+}
+
+model Product {
+  id       String         @id @default(uuid())
+  createdAt DateTime     @default(now())
+  itemId      String
+  itemType  ProductType
+  priceId String
+}
+
+model Purchase {
+  id       String         @id @default(uuid())
+  createdAt DateTime     @default(now())
+  userId    String
+  intentId  String
+  cartItems String
+  status  PurchaseStatus
+  @@index([intentId])
 }
 
 enum ChapterType {
@@ -76,4 +107,20 @@ enum PayMode {
   paid @map("paid")
 
   @@map("_PayMode")
+}
+
+
+enum ProductType {
+  story    @map("story")
+  bundle    @map("bundle")
+  @@map("_ProductType")
+}
+
+enum PurchaseStatus {
+  pending    @map("pending")
+  processing    @map("processing")
+  cancelled    @map("cancelled")
+  complete    @map("complete")
+  deleted    @map("deleted")
+  @@map("_PurchaseStatus")
 }

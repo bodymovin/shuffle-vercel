@@ -1,8 +1,10 @@
-import { Prisma, Story } from '@prisma/client';
-import { getUserPrefsFromRequest, UserPrefs } from '~/cookies';
+import type { Story } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import type { UserPrefs } from '~/cookies';
+import { getUserPrefsFromRequest } from '~/cookies';
 import { Chapters } from '~/helpers/enums/chapters';
 import { createSVG } from '~/helpers/svgToString';
-import { ChapterToContent } from '~/interfaces/chapters';
+import type { ChapterToContent } from '~/interfaces/chapters';
 import { db } from './db.server';
 
 // 1: Define a type that includes the relation to `Chapters`
@@ -12,6 +14,12 @@ const storyWithChapters = Prisma.validator<Prisma.StoryArgs>()({
 
 // 3: This type will include a user and all their chapters
 export type StoryWithChapters = Prisma.StoryGetPayload<typeof storyWithChapters>
+
+export const findStory = async (storyId: string): Promise<Story | null> => db.story.findUnique({
+  where: {
+    id: storyId,
+  },
+});
 
 export const findStories = async (storyIds: string[]): Promise<Story[]> => {
   const stories = await db.story.findMany({

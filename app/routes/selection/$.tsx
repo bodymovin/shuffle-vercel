@@ -1,28 +1,36 @@
 import { useEffect, useState } from 'react';
-import {
-  ActionFunction, LoaderFunction, redirect, json, LinkDescriptor, HeadersInit,
+import type {
+  ActionFunction, LoaderFunction, LinkDescriptor, HeadersInit,
 } from '@remix-run/node';
+import { redirect, json } from '@remix-run/node';
 import {
   useLoaderData, Form,
 } from '@remix-run/react';
-import { bodyParser, DynamicLinksFunction } from 'remix-utils';
+import type { DynamicLinksFunction } from 'remix-utils';
+import { bodyParser } from 'remix-utils';
 import ChapterButton from '~/components/selection/ChapterButton';
 import SubmitButton from '~/components/selection/SubmitButton';
-import { ChapterToContent, ChapterStrings, ChapterNavigation } from '~/interfaces/chapters';
-import { User } from '~/interfaces/user';
+import type { ChapterToContent, ChapterStrings, ChapterNavigation } from '~/interfaces/chapters';
+import type { User } from '~/interfaces/user';
 import { getUser, updateUser } from '~/utils/user.server';
 import { getSessionFromRequest, commitSession } from '~/sessions';
 import StoryChapter from '~/components/selection/StoryChapter';
-import { getUserPrefsFromRequest, updateUserPrefs, UserPrefs } from '~/cookies';
+import type { UserPrefs } from '~/cookies';
+import { getUserPrefsFromRequest, updateUserPrefs } from '~/cookies';
 import { useTranslation } from 'react-i18next';
 import { i18n } from '~/i18n.server';
 import { getSelectedChapterPaths, getSelectedStories } from '~/utils/stories.server';
-import { AnimationSegment } from 'lottie-web';
+import type { AnimationSegment } from 'lottie-web';
 import { ANONYMOUS_ID } from '~/helpers/constants/user';
+import type { ProductItem } from '~/utils/product.server';
+import { getProductsByIds } from '~/utils/product.server';
+import type { CartItem } from '~/utils/cart.server';
+import { getCartByUser } from '~/utils/cart.server';
 import { getSelectionChapterButtons, getSelectionChapterAnimationForStory, getSelectionChapterPathForStory } from '../../helpers/animationData';
 import { Chapters } from '../../helpers/enums/chapters';
+import type { SelectionStory } from '../../helpers/story';
 import {
-  getStories, getUserStoryForChapterFromRequest, SelectionStory,
+  getStories, getUserStoryForChapterFromRequest,
 } from '../../helpers/story';
 import { getSelectionSubTitleByChapter, getSelectionTitleByChapter } from '../../helpers/textData';
 
@@ -50,16 +58,44 @@ export interface SelectionUserData {
   selectedAnimationPaths: ChapterToContent
 }
 
+const getCartProducts = async (user: User, cart: CartItem[]): Promise<ProductItem[]> => {
+  // TODO: switch the following when contraints are correctly set on the DB
+  // const cart = user.cartItems || [];
+  const cartProductIds = cart.map((cartItem) => cartItem.productId);
+  //
+  if (!cartProductIds.length) {
+    return [];
+  }
+  return getProductsByIds(cartProductIds);
+};
+
+const findCart = (
+  storyId: string,
+  cartProducts: ProductItem[],
+  cart: CartItem[],
+): CartItem | null => {
+  if (!cartProducts || !cart) {
+    return null;
+  }
+  const cartProduct = cartProducts.find((product) => product.itemId === storyId);
+  if (!cartProduct) {
+    return null;
+  }
+  return cart.find((cartItem) => cartItem.productId === cartProduct.id) || null;
+};
+
 export const loader: LoaderFunction = async ({ request }):Promise<any> => {
   const session = await getSessionFromRequest(request);
   const user = await getUser(request);
+  const cart = await getCartByUser(user.id, ['pending', 'deleted']);
+  const cartProducts = await getCartProducts(user, cart);
   //
   const chapter = getChapterFromRequest(request);
   const stories = await getStories();
   const selectedStoryId = await getUserStoryForChapterFromRequest(chapter, request, stories);
   const t = await i18n.getFixedT(request, 'selection');
   const selectionStories = await Promise.all(
-    await stories
+    stories
       .map(async (story) => (
         {
           id: story.id,
@@ -67,6 +103,7 @@ export const loader: LoaderFunction = async ({ request }):Promise<any> => {
           payMode: story.payMode,
           price: story.price,
           enabled: story.payMode === 'free' || !!(user.stories && user.stories.find((userStory) => userStory.storyId === story.id)),
+          cart: story.payMode !== 'free' ? findCart(story.id, cartProducts, cart) : null,
           path: selectedStoryId === story.id ? '' : (await getSelectionChapterPathForStory(story.path, chapter)),
           animation: selectedStoryId === story.id ? JSON.stringify(await getSelectionChapterAnimationForStory(story.path, chapter)) : '',
         }

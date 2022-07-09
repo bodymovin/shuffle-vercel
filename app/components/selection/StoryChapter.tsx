@@ -1,17 +1,92 @@
-import { SelectionStory } from '~/helpers/story';
-import { User } from '~/interfaces/user';
+import type { SelectionStory } from '~/helpers/story';
+import type { User } from '~/interfaces/user';
 import { withTranslation } from 'react-i18next';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import useComponentLottie from '~/utils/hooks/useComponentLottie';
 import GamePaywall from './story_paywalls/GamePaywall';
-
+import PaidPaywall from './story_paywalls/PaidPaywall';
 
 interface StoryChapterProps {
   story: SelectionStory
   selectedStoryId: string
   isFocused: boolean
   user: User
-  t: any
+}
+
+function renderPaywall(story: SelectionStory, user: User) {
+  if (story.payMode === 'games') {
+    return (
+      <GamePaywall
+        story={story}
+        playedGames={user.games}
+      />
+    );
+  }
+  return (
+    <PaidPaywall
+      story={story}
+    />
+  );
+}
+
+function renderSelectableStory(
+  story: SelectionStory,
+  selectedStoryId: string,
+  lottieElement: React.ReactElement<any>,
+) {
+  return (
+    <>
+      <input
+        className="scroller__element__input"
+        key={`${story.id}__input`}
+        type="radio"
+        id={`radio_${story.id}`}
+        name="story"
+        value={story.id}
+        defaultChecked={selectedStoryId === story.id}
+      />
+      <label
+        htmlFor={`radio_${story.id}`}
+        key={`${story.id}__label`}
+        className="scroller__element__label"
+        id={`story-selection-${story.id}`}
+      >
+        <figure className="scroller__element__figure">
+          <div
+            className="scroller__element__figure__border"
+          />
+          {lottieElement}
+        </figure>
+      </label>
+    </>
+  );
+}
+
+function renderLockedStory(
+  story: SelectionStory,
+  lottieElement: React.ReactElement<any>,
+  user: User,
+) {
+  return (
+    <div
+      key={`${story.id}__label`}
+      className="scroller__element__label"
+      id={`story-selection-${story.id}`}
+    >
+      <figure className="scroller__element__figure">
+        <div
+          className="scroller__element__figure__border"
+        />
+        {lottieElement}
+        <div className="scroller__element__figure__lock">
+          <div
+            className="scroller__element__figure__lock__background"
+          />
+          {renderPaywall(story, user)}
+        </div>
+      </figure>
+    </div>
+  );
 }
 
 function StoryChapter(props: StoryChapterProps) {
@@ -19,7 +94,6 @@ function StoryChapter(props: StoryChapterProps) {
     story,
     selectedStoryId,
     user,
-    t,
     isFocused,
   } = props;
   const isLocked = !story.enabled;
@@ -49,41 +123,9 @@ function StoryChapter(props: StoryChapterProps) {
 
   return (
     <div key={story.id} className={classNames.join(' ')}>
-      <input
-        className="scroller__element__input"
-        key={`${story.id}__input`}
-        type="radio"
-        id={`radio_${story.id}`}
-        name="story"
-        disabled={isLocked}
-        value={story.id}
-        defaultChecked={selectedStoryId === story.id}
-      />
-      <label
-        htmlFor={`radio_${story.id}`}
-        key={`${story.id}__label`}
-        className="scroller__element__label"
-        id={`story-selection-${story.id}`}
-      >
-        <figure className="scroller__element__figure">
-          <div
-            className="scroller__element__figure__border"
-          />
-          {lottieElement}
-          {isLocked
-            && (
-            <div className="scroller__element__figure__lock">
-              <div
-                className="scroller__element__figure__lock__background"
-              />
-              <GamePaywall
-                story={story}
-                playedGames={user.games}
-              />
-            </div>
-            )}
-        </figure>
-      </label>
+      {isLocked
+        ? renderLockedStory(story, lottieElement, user)
+        : renderSelectableStory(story, selectedStoryId, lottieElement)}
     </div>
   );
 }
